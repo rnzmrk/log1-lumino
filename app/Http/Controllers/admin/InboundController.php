@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Inbound;
 use App\Models\PurchaseOrder;
+use App\Models\StorageLocation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class InboundController extends Controller
 {
@@ -14,14 +16,18 @@ class InboundController extends Controller
      */
     public function index(Request $request)
     {
-        // Get only approved purchase orders with their related requests
+        // Get only approved purchase orders with their related requests that don't have inbound shipments yet
         $approvedPOs = PurchaseOrder::where('status', 'approved')
+            ->whereDoesntHave('inbound')
             ->with('request') // Load the related request
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // Get all storage locations
+        $storageLocations = StorageLocation::orderBy('name')->get();
+
         // Build the query for inbound shipments
-        $query = Inbound::with(['purchaseOrder.request', 'creator'])
+        $query = Inbound::with(['purchaseOrder.request', 'creator', 'storageLocation'])
             ->orderBy('created_at', 'desc');
 
         // Apply status filter if provided
@@ -40,7 +46,7 @@ class InboundController extends Controller
             'received' => $allInbounds->where('status', 'received')->count(),
         ];
 
-        return view('admin.warehouse.inbound.inbound', compact('approvedPOs', 'inbounds', 'stats'));
+        return view('admin.warehouse.inbound.inbound', compact('approvedPOs', 'storageLocations', 'inbounds', 'stats'));
     }
 
     /**
@@ -51,8 +57,8 @@ class InboundController extends Controller
         // Validate the request
         $validated = $request->validate([
             'purchase_order_id' => 'required|exists:purchase_orders,id',
-            'location' => 'required|string|max:255',
-            'quantity_received' => 'required|integer|min:1',
+            'storage_location_id' => 'nullable|exists:storage_locations,id',
+            'quantity_received' => 'nullable|integer|min:1',
             'notes' => 'nullable|string|max:1000',
         ]);
 
@@ -65,14 +71,23 @@ class InboundController extends Controller
         }
 
         // Create the inbound shipment
-        $inbound = Inbound::create([
+        $storageLocation = \App\Models\StorageLocation::find($validated['storage_location_id']);
+        
+        $inboundData = [
             'purchase_order_id' => $validated['purchase_order_id'],
-            'location' => $validated['location'],
+            'location' => $storageLocation ? $storageLocation->name : null,
             'quantity_received' => $validated['quantity_received'],
             'notes' => $validated['notes'],
             'status' => 'pending',
             'created_by' => auth()->id(),
-        ]);
+        ];
+        
+        // Add storage_location_id if the column exists
+        if (Schema::hasColumn('inbounds', 'storage_location_id')) {
+            $inboundData['storage_location_id'] = $validated['storage_location_id'];
+        }
+        
+        $inbound = Inbound::create($inboundData);
 
         return redirect()->route('warehouse.inbound')->with('success', 'Inbound shipment created successfully!');
     }
@@ -82,10 +97,55 @@ class InboundController extends Controller
      */
     public function show($id)
     {
-        $inbound = Inbound::with(['purchaseOrder.request', 'creator'])
+        $inbound = Inbound::with(['purchaseOrder.request', 'creator', 'storageLocation'])
             ->findOrFail($id);
+        
+        $storageLocations = StorageLocation::orderBy('name')->get();
 
-        return view('admin.warehouse.inbound.show', compact('inbound'));
+        return view('admin.warehouse.inbound.show', compact('inbound', 'storageLocations'));
+    }
+
+    /**
+     * Update the specified inbound shipment.
+     */
+    public function update(Request $request, $id)
+    {
+        $inbound = Inbound::findOrFail($id);
+
+        // Validate the request
+        $validated = $request->validate([
+            'storage_location_id' => 'nullable|exists:storage_locations,id',
+            'quantity_received' => 'nullable|integer|min:1',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        // Update the inbound shipment
+        $inboundData = [];
+        
+        if (isset($validated['storage_location_id'])) {
+            $inboundData['storage_location_id'] = $validated['storage_location_id'];
+            
+            // Also update the location name if storage location is provided
+            if ($validated['storage_location_id']) {
+                $storageLocation = StorageLocation::find($validated['storage_location_id']);
+                $inboundData['location'] = $storageLocation ? $storageLocation->name : null;
+            }
+        }
+        
+        if (isset($validated['quantity_received'])) {
+            $inboundData['quantity_received'] = $validated['quantity_received'];
+        }
+        
+        if (isset($validated['notes'])) {
+            $inboundData['notes'] = $validated['notes'];
+        }
+
+        if (!empty($inboundData)) {
+            $inbound->update($inboundData);
+        }
+
+        return redirect()->route('admin.inbound.show', $inbound->id)
+            ->with('success', 'Inbound shipment updated successfully!');
     }
 
     /**

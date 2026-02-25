@@ -135,7 +135,9 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $inbound->purchaseOrder->request->item_name ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $inbound->purchaseOrder->request->quantity ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $inbound->quantity_received }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $inbound->location }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+    {{ $inbound->storageLocation ? $inbound->storageLocation->name : ($inbound->location ?? 'N/A') }}
+</td>
                         <td class="px-6 py-4 text-sm text-slate-600">{{ $inbound->purchaseOrder->request->description ?? 'No description available' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $inbound->purchaseOrder->supplier }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -263,10 +265,16 @@
                 <!-- Storage Location -->
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Storage Location</label>
-                    <input type="text" name="location" required
-                           placeholder="e.g., Warehouse A-1, Section B, Rack 3"
-                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    @error('location')
+                    <select name="storage_location_id" 
+                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Select storage location...</option>
+                        @if(isset($storageLocations))
+                            @foreach($storageLocations as $location)
+                                <option value="{{ $location->id }}">{{ $location->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                    @error('storage_location_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -274,7 +282,7 @@
                 <!-- Quantity Received -->
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-2">Quantity Received</label>
-                    <input type="number" name="quantity_received" required min="1" value="1"
+                    <input type="number" name="quantity_received" min="1" value="1"
                            placeholder="Enter quantity"
                            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     @error('quantity_received')

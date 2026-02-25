@@ -12,6 +12,7 @@ class Inbound extends Model
     protected $fillable = [
         'purchase_order_id',
         'location',
+        'storage_location_id',
         'quantity_received',
         'notes',
         'status',
@@ -22,6 +23,7 @@ class Inbound extends Model
         'quantity_received' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'storage_location_id' => 'integer',
     ];
 
     /**
@@ -38,6 +40,14 @@ class Inbound extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Get the storage location for this inbound shipment.
+     */
+    public function storageLocation()
+    {
+        return $this->belongsTo(StorageLocation::class);
     }
 
     /**

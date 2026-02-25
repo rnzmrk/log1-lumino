@@ -16,7 +16,13 @@ class PurchaseOrderController extends Controller
     public function index()
     {
         $purchaseOrders = PurchaseOrder::orderBy('created_at', 'desc')->get();
-        $requests = Request::all();
+        
+        // Get requests that are ready for bidding
+        $requests = Request::where('status', 'for_bid')
+            ->whereDoesntHave('purchaseOrder')
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
         $suppliers = \App\Models\Supplier::where('status', 'active')->get();
         
         return view('admin.procuments.po.po', compact('purchaseOrders', 'requests', 'suppliers'));

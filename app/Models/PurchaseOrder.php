@@ -32,6 +32,14 @@ class PurchaseOrder extends Model
     }
 
     /**
+     * Get the inbound shipment for this purchase order.
+     */
+    public function inbound()
+    {
+        return $this->hasOne(Inbound::class);
+    }
+
+    /**
      * Scope to get POs by status.
      */
     public function scopeByStatus($query, $status)

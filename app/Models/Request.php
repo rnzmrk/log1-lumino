@@ -22,4 +22,14 @@ class Request extends Model
     {
         return $this->hasMany(Bid::class);
     }
+
+    public function purchaseOrder()
+    {
+        return $this->hasOne(PurchaseOrder::class);
+    }
+
+    public function inbound()
+    {
+        return $this->hasOne(Inbound::class);
+    }
 }

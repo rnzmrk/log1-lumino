@@ -9,8 +9,15 @@ use App\Models\Request as RequestModel;
 
 class BidController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // Check if request_id parameter is provided
+        if ($request->has('request_id')) {
+            // Show bids for specific request
+            $request = RequestModel::with('bids')->findOrFail($request->request_id);
+            return view('admin.procuments.bid.request-bids', compact('request'));
+        }
+
         // Get requests that have bids
         $requestsWithBids = RequestModel::whereHas('bids')
             ->withCount('bids')
@@ -42,16 +49,23 @@ class BidController extends Controller
 
     public function updateBidStatus(Request $request, $bidId)
     {
-        $validated = $request->validate([
-            'status' => 'required|in:accepted,rejected'
-        ]);
+        try {
+            $validated = $request->validate([
+                'status' => 'required|in:accepted,rejected'
+            ]);
 
-        $bid = Bid::findOrFail($bidId);
-        $bid->update(['status' => $validated['status']]);
+            $bid = Bid::findOrFail($bidId);
+            $bid->update(['status' => $validated['status']]);
 
-        return response()->json([
-            'success' => true,
-            'message' => "Bid {$validated['status']} successfully!"
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => "Bid {$validated['status']} successfully!"
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating bid status: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

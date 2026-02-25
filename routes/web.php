@@ -15,6 +15,13 @@ Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
 
+Route::post('/logout', function () {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');
+
 // Supplier Website Route
 Route::get('/supplier', function () {
     return view('supplier-website');
@@ -64,8 +71,15 @@ Route::get('/warehouse/inventory', function () {
 
 Route::get('/warehouse/inbound', [App\Http\Controllers\Admin\InboundController::class, 'index'])->name('warehouse.inbound');
 Route::get('/admin/inbound/{id}', [App\Http\Controllers\Admin\InboundController::class, 'show'])->name('admin.inbound.show');
+Route::put('/admin/inbound/{id}', [App\Http\Controllers\Admin\InboundController::class, 'update'])->name('admin.inbound.update');
 Route::post('/admin/inbound/{id}/update-status', [App\Http\Controllers\Admin\InboundController::class, 'updateStatus'])->name('admin.inbound.update-status');
 Route::post('/admin/inbound/store', [App\Http\Controllers\Admin\InboundController::class, 'store'])->name('admin.inbound.store');
+
+Route::get('/warehouse/storage', [App\Http\Controllers\Admin\StorageLocationController::class, 'index'])->name('warehouse.storage');
+Route::get('/warehouse/storage/create', [App\Http\Controllers\Admin\StorageLocationController::class, 'create'])->name('warehouse.storage.create');
+Route::post('/warehouse/storage', [App\Http\Controllers\Admin\StorageLocationController::class, 'store'])->name('warehouse.storage.store');
+Route::put('/warehouse/storage/{id}', [App\Http\Controllers\Admin\StorageLocationController::class, 'update'])->name('warehouse.storage.update');
+Route::delete('/warehouse/storage/{id}', [App\Http\Controllers\Admin\StorageLocationController::class, 'destroy'])->name('warehouse.storage.destroy');
 
 Route::get('/warehouse/outbound', function () {
     return view('admin.warehouse.outbound.outbound');
@@ -83,6 +97,7 @@ Route::get('/procurement/po', [App\Http\Controllers\Admin\PurchaseOrderControlle
 
 // Admin Bid Management Routes
 Route::get('/admin/bids', [App\Http\Controllers\Admin\BidController::class, 'index'])->name('admin.bids.index');
+Route::post('/admin/bids/{id}/status', [App\Http\Controllers\Admin\BidController::class, 'updateBidStatus'])->name('admin.bids.updateStatus');
 
 // Admin Purchase Order Routes
 Route::get('/admin/purchase-orders', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'index'])->name('admin.purchase-orders.index');

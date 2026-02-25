@@ -115,7 +115,8 @@
 
 <script>
     function viewBids(requestId) {
-        window.location.href = `/admin/requests/${requestId}/bids`;
+        // Navigate to admin bids page with request filter
+        window.location.href = `/admin/bids?request_id=${requestId}`;
     }
 </script>
 @endsection
