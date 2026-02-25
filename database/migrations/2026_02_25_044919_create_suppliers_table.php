@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('type');
             $table->text('address');
             $table->string('phone')->nullable();
-            $table->enum('status', ['pending', 'rejected', 'approve'])->default('pending');
+            $table->enum('status', ['pending', 'rejected', 'active'])->default('pending');
+            $table->text('rejection_reason')->nullable();
             $table->timestamps();
         });
     }

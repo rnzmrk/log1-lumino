@@ -37,10 +37,14 @@
                         <a href="#process" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Process</a>
                         <a href="#requirements" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Requirements</a>
                         <a href="#contact" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Contact</a>
+                        <a href="{{ route('supplier.login') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Login</a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="#apply" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium">
+                    <a href="{{ route('supplier.login') }}" class="text-blue-600 hover:text-blue-700 px-4 py-2 text-sm font-medium">
+                        Sign In
+                    </a>
+                    <a href="{{ route('supplier.register') }}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium">
                         Become a Supplier
                     </a>
                 </div>
@@ -60,7 +64,7 @@
                     We're looking for reliable partners to help us deliver excellence to our clients.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#apply" class="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 font-semibold text-lg">
+                    <a href="{{ route('supplier.register') }}" class="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 font-semibold text-lg">
                         Apply Now
                     </a>
                     <a href="#benefits" class="bg-white text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-lg hover:bg-blue-50 font-semibold text-lg">
@@ -281,9 +285,9 @@
                 Take the first step towards a profitable partnership with Lumino Logistics.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 font-semibold text-lg">
+                <a href="{{ route('supplier.register') }}" class="bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 font-semibold text-lg">
                     Apply Now
-                </button>
+                </a>
                 <a href="#contact" class="bg-transparent text-white border-2 border-white px-8 py-4 rounded-lg hover:bg-white hover:text-blue-600 font-semibold text-lg">
                     Contact Sales
                 </a>

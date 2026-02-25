@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->enum('type', ['asset', 'supply']);
             $table->text('description')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'completed', 'for_bid'])->default('pending');
             $table->timestamps();
         });
     }

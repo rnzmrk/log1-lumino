@@ -3,7 +3,8 @@
         'pending' => 'bg-amber-100 text-amber-700',
         'approved' => 'bg-green-100 text-green-700',
         'rejected' => 'bg-red-100 text-red-700',
-        'completed' => 'bg-blue-100 text-blue-700'
+        'completed' => 'bg-blue-100 text-blue-700',
+        'for_bid' => 'bg-purple-100 text-purple-700'
     ];
     
     // Calculate status counts
@@ -11,6 +12,7 @@
     $pendingCount = isset($requests) ? $requests->where('status', 'pending')->count() : 0;
     $approvedCount = isset($requests) ? $requests->where('status', 'approved')->count() : 0;
     $rejectedCount = isset($requests) ? $requests->where('status', 'rejected')->count() : 0;
+    $forBidCount = isset($requests) ? $requests->where('status', 'for_bid')->count() : 0;
 @endphp
 
 @extends('components.app')
@@ -148,6 +150,10 @@
                                 @if($request->status === 'pending')
                                     <button onclick="updateRequestStatus({{ $request->id }}, 'approved')" class="text-green-600 hover:text-green-800 font-medium mr-3">Approve</button>
                                     <button onclick="updateRequestStatus({{ $request->id }}, 'rejected')" class="text-red-600 hover:text-red-800 font-medium">Reject</button>
+                                @elseif($request->status === 'approved')
+                                    <button onclick="updateRequestStatus({{ $request->id }}, 'for_bid')" class="text-purple-600 hover:text-purple-800 font-medium">For Bid</button>
+                                @elseif($request->status === 'for_bid')
+                                    <button onclick="updateRequestStatus({{ $request->id }}, 'completed')" class="text-blue-600 hover:text-blue-800 font-medium">Done</button>
                                 @endif
                             </td>
                         </tr>
@@ -261,11 +267,12 @@
             'pending': 'bg-amber-100 text-amber-700',
             'approved': 'bg-green-100 text-green-700',
             'rejected' : 'bg-red-100 text-red-700',
-            'completed' : 'bg-blue-100 text-blue-700'
+            'completed' : 'bg-blue-100 text-blue-700',
+            'for_bid' : 'bg-purple-100 text-purple-700'
         };
         
         statusElement.className = `inline-flex px-2.5 py-1 text-xs font-medium rounded-full ${statusColors[status] || 'bg-gray-100 text-gray-700'}`;
-        statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        statusElement.textContent = status.charAt(0).toUpperCase() + status.replace('_', ' ');
         
         // Set action buttons
         const actionsContainer = document.getElementById('viewModalActions');
@@ -276,6 +283,24 @@
                 </button>
                 <button onclick="updateRequestStatus(${id}, 'rejected'); closeViewModal();" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
                     Reject Request
+                </button>
+                <button onclick="closeViewModal()" class="flex-1 bg-white border border-slate-300 text-slate-700 py-2 px-4 rounded-lg hover:bg-slate-50 transition-colors">
+                    Close
+                </button>
+            `;
+        } else if (status === 'approved') {
+            actionsContainer.innerHTML = `
+                <button onclick="updateRequestStatus(${id}, 'for_bid'); closeViewModal();" class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+                    Set For Bid
+                </button>
+                <button onclick="closeViewModal()" class="flex-1 bg-white border border-slate-300 text-slate-700 py-2 px-4 rounded-lg hover:bg-slate-50 transition-colors">
+                    Close
+                </button>
+            `;
+        } else if (status === 'for_bid') {
+            actionsContainer.innerHTML = `
+                <button onclick="updateRequestStatus(${id}, 'completed'); closeViewModal();" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                    Mark as Done
                 </button>
                 <button onclick="closeViewModal()" class="flex-1 bg-white border border-slate-300 text-slate-700 py-2 px-4 rounded-lg hover:bg-slate-50 transition-colors">
                     Close
@@ -298,7 +323,7 @@
     }
 
     async function updateRequestStatus(requestId, newStatus) {
-        if (!confirm(`Are you sure you want to ${newStatus} this request?`)) {
+        if (!confirm(`Are you sure you want to ${newStatus.replace('_', ' ')} this request?`)) {
             return;
         }
 
@@ -317,7 +342,7 @@
             const data = await response.json();
 
             if (data.success) {
-                showNotification(`Request ${newStatus} successfully!`, 'success');
+                showNotification(`Request ${newStatus.replace('_', ' ')} successfully!`, 'success');
                 // Reload page to show updated status
                 setTimeout(() => {
                     window.location.reload();

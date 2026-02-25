@@ -50,7 +50,7 @@ class RequestController extends Controller
     public function updateStatus(HttpRequest $request, $id)
     {
         $validated = $request->validate([
-            'status' => 'required|in:approved,rejected,completed'
+            'status' => 'required|in:approved,rejected,completed,for_bid,done'
         ]);
 
         $requestModel = Request::find($id);
@@ -72,4 +72,5 @@ class RequestController extends Controller
             'request' => $requestModel
         ]);
     }
+
 }

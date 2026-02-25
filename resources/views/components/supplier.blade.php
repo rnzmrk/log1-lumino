@@ -1,21 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumino Logistics 1</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Supplier Portal - Lumino Logistics</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-gray-50">
     <div class="flex h-screen">
-
-        {{-- Main column --}}
+        <!-- Sidebar -->
+        @include('components.includes.supplier-sidebar')
+        
+        <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            @include('components.includes.header')
-
-            <main class="flex-1 overflow-y-auto px-4 py-4">
+            <!-- Header -->
+            @include('components.includes.supplier-header')
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto">
                 @yield('content')
             </main>
         </div>

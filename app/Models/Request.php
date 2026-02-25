@@ -11,10 +11,15 @@ class Request extends Model
         'quantity',
         'type',
         'description',
-        'status'
+        'status',
     ];
 
     protected $casts = [
         'quantity' => 'integer',
     ];
+
+    public function bids()
+    {
+        return $this->hasMany(Bid::class);
+    }
 }

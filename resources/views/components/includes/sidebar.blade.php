@@ -101,7 +101,13 @@
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
                    Purchase Order
                 </a>
-                <a href="{{ route('procurement.supplier') }}" 
+                <a href="{{ route('admin.bids.index') }}" 
+                   data-item="procurement-bids"
+                   data-section="procurement"
+                   class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
+                   Bids
+                </a>
+                <a href="{{ route('admin.supplier.index') }}" 
                    data-item="procurement-supplier"
                    data-section="procurement"
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
@@ -213,6 +219,12 @@
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
                    Reports
                 </a>
+                <a href="{{ route('documents.requirements') }}" 
+                   data-item="documents-requirements"
+                   data-section="documents"
+                   class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
+                   Requirements
+                </a>
             </div>
         </div>
         <hr class="border-slate-200 my-4">
@@ -254,10 +266,10 @@ document.addEventListener('DOMContentLoaded', function() {
         activeItem: null,
         sectionItems: {
             'warehouse': ['warehouse-inbound', 'warehouse-inventory', 'warehouse-outbound', 'warehouse-returns'],
-            'procurement': ['procurement-request', 'procurement-po', 'procurement-supplier'],
+            'procurement': ['procurement-request', 'procurement-po', 'procurement-bids', 'procurement-supplier'],
             'asset': ['asset-request', 'asset-list', 'asset-maintenance'],
             'logistics': ['logistics-list', 'logistics-tracking', 'logistics-maintenance'],
-            'documents': ['documents-reports'],
+            'documents': ['documents-reports', 'documents-requirements'],
             'supplier-accounts': ['supplier-list', 'supplier-profiles', 'supplier-contracts', 'supplier-payments']
         },
 
@@ -399,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '/warehouse/return': 'warehouse-returns',
                 '/procurement/request': 'procurement-request',
                 '/procurement/po': 'procurement-po',
+                '/admin/bids': 'procurement-bids',
                 '/procurement/supplier': 'procurement-supplier',
                 '/assets/request': 'asset-request',
                 '/assets/list': 'asset-list',
@@ -407,6 +420,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '/logistics/tracking': 'logistics-tracking',
                 '/logistics/maintenance': 'logistics-maintenance',
                 '/documents/reports': 'documents-reports',
+                '/documents/requirements': 'documents-requirements',
                 '/dashboard': 'dashboard'
             };
 
