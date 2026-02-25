@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inbound_id')->constrained()->onDelete('cascade');
-            $table->integer('duration');
+            $table->foreignId('inventory_id')->constrained()->onDelete('cascade');
+            $table->integer('quantity');
             $table->string('department')->nullable();
             $table->enum('status', ['active', 'maintenance', 'replacement'])->default('active');
             $table->timestamps();

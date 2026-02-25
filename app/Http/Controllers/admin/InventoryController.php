@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 
-class InventoryController extends Controller
+class InventoryController extends Controller  
 {
     /**
      * Display a listing of the inventory.

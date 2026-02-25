@@ -41,10 +41,32 @@ class RequestController extends Controller
         ]);
     }
 
-    public function supplyRequests()
+    public function search(HttpRequest $request)
     {
-        $requests = Request::where('type', 'supply')->orderBy('created_at', 'desc')->get();
-        return view('admin.procuments.request.request', compact('requests'));
+        $query = Request::orderBy('created_at', 'desc');
+        
+        // Apply search filter if provided
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where('item_name', 'like', '%' . $search . '%');
+        }
+        
+        // Apply type filter if provided
+        if ($request->has('type') && $request->type !== '') {
+            $query->where('type', $request->type);
+        }
+        
+        // Apply status filter if provided
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+        
+        $requests = $query->get();
+        
+        return response()->json([
+            'success' => true,
+            'requests' => $requests
+        ]);
     }
 
     public function updateStatus(HttpRequest $request, $id)
@@ -71,6 +93,37 @@ class RequestController extends Controller
             'message' => "Request {$validated['status']} successfully!",
             'request' => $requestModel
         ]);
+    }
+
+    public function assetRequests(HttpRequest $request)
+    {
+        $query = Request::where('type', 'asset')->orderBy('created_at', 'desc');
+
+        // Apply search filter if provided
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where('item_name', 'like', '%' . $search . '%');
+        }
+
+        // Apply status filter if provided
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+
+        // Apply date filter if provided
+        if ($request->has('date') && $request->date !== '') {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        $requests = $query->paginate(5);
+
+        return view('admin.assets.request.asset-request', compact('requests'));
+    }
+
+    public function supplyRequests()
+    {
+        $requests = Request::where('type', 'supply')->orderBy('created_at', 'desc')->get();
+        return view('admin.procuments.request.request', compact('requests'));
     }
 
 }

@@ -66,6 +66,7 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 Route::get('/warehouse/inventory', [App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('warehouse.inventory');
+Route::get('/admin/inventory/asset-items', [App\Http\Controllers\Admin\AssetController::class, 'getAssetItems'])->name('admin.inventory.asset-items');
 Route::get('/admin/inventory/{id}', [App\Http\Controllers\Admin\InventoryController::class, 'show'])->name('admin.inventory.show');
 Route::get('/admin/inventory/{id}/edit', [App\Http\Controllers\Admin\InventoryController::class, 'edit'])->name('admin.inventory.edit');
 Route::put('/admin/inventory/{id}', [App\Http\Controllers\Admin\InventoryController::class, 'update'])->name('admin.inventory.update');
@@ -115,17 +116,21 @@ Route::get('/admin/supplier/{id}', [App\Http\Controllers\Admin\SupplierControlle
 Route::post('/admin/supplier/accept/{id}', [App\Http\Controllers\Admin\SupplierController::class, 'accept'])->name('admin.supplier.accept');
 Route::post('/admin/supplier/reject/{id}', [App\Http\Controllers\Admin\SupplierController::class, 'reject'])->name('admin.supplier.reject');
 
-Route::get('/assets/request', function () {
-    return view('admin.assets.request.asset-request');
-})->name('assets.request');
+Route::get('/assets/request', [App\Http\Controllers\Admin\RequestController::class, 'assetRequests'])->name('assets.requests');
+Route::post('/admin/requests/search', [App\Http\Controllers\Admin\RequestController::class, 'search'])->name('admin.requests.search');
+Route::post('/admin/requests/store', [App\Http\Controllers\Admin\RequestController::class, 'store'])->name('admin.requests.store');
+Route::post('/admin/requests/{id}/status', [App\Http\Controllers\Admin\RequestController::class, 'updateStatus'])->name('admin.requests.update-status');
 
-Route::get('/assets/list', function () {
-    return view('admin.assets.list.asset-list');
-})->name('assets.list');
-
-Route::get('/assets/maintenance', function () {
-    return view('admin.assets.maintenance.maintenance');
-})->name('assets.maintenance');
+Route::get('/assets/list', [App\Http\Controllers\Admin\AssetController::class, 'index'])->name('assets.list');
+Route::post('/admin/assets/store', [App\Http\Controllers\Admin\AssetController::class, 'store'])->name('admin.assets.store');
+Route::post('/admin/assets/maintenance', [App\Http\Controllers\Admin\AssetController::class, 'setMaintenance'])->name('admin.assets.maintenance');
+Route::get('/admin/assets/maintenance', [App\Http\Controllers\Admin\AssetController::class, 'maintenanceIndex'])->name('admin.maintenance.index');
+Route::post('/admin/assets/maintenance/{id}/status', [App\Http\Controllers\Admin\AssetController::class, 'updateMaintenanceStatus'])->name('admin.maintenance.update-status');
+Route::get('/admin/assets/{id}', [App\Http\Controllers\Admin\AssetController::class, 'show'])->name('admin.assets.show');
+Route::get('/admin/assets/{id}/edit', [App\Http\Controllers\Admin\AssetController::class, 'edit'])->name('admin.assets.edit');
+Route::put('/admin/assets/{id}', [App\Http\Controllers\Admin\AssetController::class, 'update'])->name('admin.assets.update');
+Route::delete('/admin/assets/{id}', [App\Http\Controllers\Admin\AssetController::class, 'destroy'])->name('admin.assets.destroy');
+Route::post('/admin/assets/{id}/status', [App\Http\Controllers\Admin\AssetController::class, 'updateStatus'])->name('admin.assets.update-status');
 
 Route::get('/logistics/vehicles', function () {
     return view('admin.logistics.list.list-vehicle');

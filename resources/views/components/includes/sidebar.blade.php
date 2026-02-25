@@ -139,7 +139,7 @@
                 <span class="text-xs text-slate-400 transition-transform sidebar-chevron">▾</span>
             </button>
             <div class="sidebar-section-content ml-11 space-y-1 text-slate-600 hidden" data-section="asset">
-                <a href="{{ route('assets.request') }}" 
+                <a href="{{ route('assets.requests') }}" 
                    data-item="asset-request"
                    data-section="asset"
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
@@ -151,7 +151,7 @@
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
                    Assets List
                 </a>
-                <a href="{{ route('assets.maintenance') }}" 
+                <a href="{{ route('admin.maintenance.index') }}" 
                    data-item="asset-maintenance"
                    data-section="asset"
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '/procurement/supplier': 'procurement-supplier',
                 '/assets/request': 'asset-request',
                 '/assets/list': 'asset-list',
-                '/assets/maintenance': 'asset-maintenance',
+                '/admin/assets/maintenance': 'asset-maintenance',
                 '/logistics/vehicles': 'logistics-list',
                 '/logistics/tracking': 'logistics-tracking',
                 '/logistics/maintenance': 'logistics-maintenance',

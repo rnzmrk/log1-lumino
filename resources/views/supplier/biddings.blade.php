@@ -11,7 +11,7 @@
     <!-- Available Requests Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @php
-            $requests = \App\Models\Request::where('status', 'for_bid')->where('type', 'supply')->get();
+            $requests = \App\Models\Request::where('status', 'for_bid')->get();
         @endphp
         
         @if($requests->count() > 0)
