@@ -13,17 +13,11 @@ return new class extends Migration
     {
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained()->onDelete('cascade');
-            $table->string('supplier');
-            $table->integer('price');
-            $table->enum('status', ['ordered', 'approved', 'cancelled'])->default('ordered');
-            $table->date('expected_delivery_date')->nullable();
-            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
 
-    /**  
+    /**
      * Reverse the migrations.
      */
     public function down(): void

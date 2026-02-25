@@ -37,9 +37,12 @@ Route::get('/supplier/biddings', function () {
     return view('supplier.biddings');
 })->name('supplier.biddings')->middleware('auth:supplier');
 
-Route::get('/supplier/orders', function () {
-    return view('supplier.orders');
-})->name('supplier.orders')->middleware('auth:supplier');
+Route::get('/supplier/orders', [App\Http\Controllers\Supplier\SupplierOrderController::class, 'index'])->name('supplier.orders')->middleware('auth:supplier');
+Route::put('/supplier/orders/{id}', [App\Http\Controllers\Supplier\SupplierOrderController::class, 'update'])->name('supplier.orders.update')->middleware('auth:supplier');
+
+Route::get('/supplier/inbound', [App\Http\Controllers\Supplier\SupplierInboundController::class, 'index'])->name('supplier.inbound')->middleware('auth:supplier');
+Route::get('/supplier/inbound/{id}', [App\Http\Controllers\Supplier\SupplierInboundController::class, 'show'])->name('supplier.inbound.show')->middleware('auth:supplier');
+Route::post('/supplier/inbound/{id}/update-status', [App\Http\Controllers\Supplier\SupplierInboundController::class, 'updateStatus'])->name('supplier.inbound.update-status')->middleware('auth:supplier');
 
 Route::get('/supplier/returns', function () {
     return view('supplier.returns');
@@ -59,9 +62,10 @@ Route::get('/warehouse/inventory', function () {
     return view('admin.warehouse.inventory.inventory');
 })->name('warehouse.inventory');
 
-Route::get('/warehouse/inbound', function () {
-    return view('admin.warehouse.inbound.inbound');
-})->name('warehouse.inbound');
+Route::get('/warehouse/inbound', [App\Http\Controllers\Admin\InboundController::class, 'index'])->name('warehouse.inbound');
+Route::get('/admin/inbound/{id}', [App\Http\Controllers\Admin\InboundController::class, 'show'])->name('admin.inbound.show');
+Route::post('/admin/inbound/{id}/update-status', [App\Http\Controllers\Admin\InboundController::class, 'updateStatus'])->name('admin.inbound.update-status');
+Route::post('/admin/inbound/store', [App\Http\Controllers\Admin\InboundController::class, 'store'])->name('admin.inbound.store');
 
 Route::get('/warehouse/outbound', function () {
     return view('admin.warehouse.outbound.outbound');
@@ -75,14 +79,15 @@ Route::get('/procurement/request', function () {
     return view('admin.procuments.request.request');
 })->name('procurement.request');
 
-Route::get('/procurement/po', function () {
-    return view('admin.procuments.po.po');
-})->name('procurement.po');
+Route::get('/procurement/po', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'index'])->name('procurement.po');
 
 // Admin Bid Management Routes
 Route::get('/admin/bids', [App\Http\Controllers\Admin\BidController::class, 'index'])->name('admin.bids.index');
-Route::get('/admin/requests/{requestId}/bids', [App\Http\Controllers\Admin\BidController::class, 'showRequestBids'])->name('admin.requests.bids');
-Route::post('/admin/bids/{bidId}/status', [App\Http\Controllers\Admin\BidController::class, 'updateBidStatus'])->name('admin.bids.update-status');
+
+// Admin Purchase Order Routes
+Route::get('/admin/purchase-orders', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'index'])->name('admin.purchase-orders.index');
+Route::get('/admin/purchase-orders/create', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'create'])->name('admin.purchase-orders.create');
+Route::post('/admin/purchase-orders', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'store'])->name('admin.purchase-orders.store');
 
 Route::get('/procurement/supplier', [App\Http\Controllers\Admin\SupplierController::class, 'index'])->name('admin.supplier.index');
 Route::get('/admin/supplier/{id}', [App\Http\Controllers\Admin\SupplierController::class, 'show'])->name('admin.supplier.show');

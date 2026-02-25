@@ -5,173 +5,269 @@
     {{-- Header --}}
     <div class="mb-6 px-4">
         <h1 class="text-3xl font-bold text-slate-900">Purchase Orders</h1>
-        <p class="text-slate-500 mt-2">Manage and track purchase orders for supplies and equipment</p>
+        <p class="text-slate-500 mt-2">Manage and track purchase orders</p>
     </div>
 
-    {{-- Action Buttons --}}
-    <div class="mb-6 flex gap-3 px-4">
-        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+    {{-- Success/Error Messages --}}
+    @if(session('success'))
+        <div class="mb-4 mx-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-4 mx-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    {{-- PO Status Cards --}}
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 px-4">
+        {{-- Total POs Card --}}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-600">Total POs</p>
+                    <p class="text-2xl font-bold text-slate-900">{{ $purchaseOrders->count() }}</p>
+                </div>
+                <div class="p-3 bg-slate-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-slate-600">
+                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Ordered POs Card --}}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-600">Ordered</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ $purchaseOrders->where('status', 'ordered')->count() }}</p>
+                </div>
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-blue-600">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Approved POs Card --}}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-600">Approved</p>
+                    <p class="text-2xl font-bold text-green-600">{{ $purchaseOrders->where('status', 'approved')->count() }}</p>
+                </div>
+                <div class="p-3 bg-green-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-green-600">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Cancelled POs Card --}}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-600">Cancelled</p>
+                    <p class="text-2xl font-bold text-red-600">{{ $purchaseOrders->where('status', 'cancelled')->count() }}</p>
+                </div>
+                <div class="p-3 bg-red-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-red-600">
+                        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Create PO Button --}}
+    <div class="mb-6 px-4">
+        <button onclick="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
                 <path d="M12 4v16m8-8H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            New PO
-        </button>
-        <button class="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
-                <path d="M3 12h18m-9-9v18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            History
-        </button>
-        <button class="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
-                <path d="M3.75 5.25h2.25L7.5 15.75h11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <circle cx="9" cy="18" r="1.25" fill="currentColor" />
-                <circle cx="17" cy="18" r="1.25" fill="currentColor" />
-            </svg>
-            Report
+            Create Purchase Order
         </button>
     </div>
 
-    {{-- Search and Filters --}}
-    <div class="mb-6 bg-white rounded-lg border border-slate-200 p-4 mx-4">
-        <div class="flex gap-4">
-            <div class="flex-1">
-                <input type="text" placeholder="Search by PO ID or item name..." class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            </div>
-            <select class="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option>All Status</option>
-                <option>Pending</option>
-                <option>Approved</option>
-                <option>Ordered</option>
-                <option>Received</option>
-                <option>Cancelled</option>
-            </select>
-            <select class="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option>All Types</option>
-                <option>Supplies</option>
-                <option>Equipment</option>
-                <option>Materials</option>
-            </select>
-            <input type="date" class="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-    </div>
-
-    {{-- PO Table --}}
-    <div class="bg-white rounded-lg border border-slate-200 overflow-hidden mx-4">
+    {{-- Purchase Orders Table --}}
+    <div class="bg-white rounded-lg shadow-md mx-4">
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[1400px]">
+            <table class="w-full">
                 <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">PO ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Item Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Quantity</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Description</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Supplier</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Request ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Company Name</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Price</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Expected Delivery</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Created</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-200">
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#PO0456</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Office Paper A4</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">1000</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Supplies</td>
-                        <td class="px-6 py-4 text-sm text-slate-600">Standard A4 office paper, 80gsm, white - Premium quality for everyday printing</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Office Supplies Co</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">$2,500.00</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">2024-01-15</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Pending</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium">View</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#PO0457</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Laptop Stand</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">50</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Equipment</td>
-                        <td class="px-6 py-4 text-sm text-slate-600">Adjustable aluminum laptop stand for ergonomic use, fits laptops up to 17 inches</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">TechGear Inc</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">$1,250.00</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">2024-01-14</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Approved</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium">View</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#PO0458</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Printer Toner Black</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">25</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Supplies</td>
-                        <td class="px-6 py-4 text-sm text-slate-600">HP LaserJet toner cartridge, black, compatible with various HP printer models</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">PrintMaster Ltd</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">$750.00</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">2024-01-13</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">Ordered</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium">View</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#PO0459</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Safety Gloves</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">500</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Supplies</td>
-                        <td class="px-6 py-4 text-sm text-slate-600">Disposable nitrile gloves, size large, powder-free, medical grade</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">SafetyFirst Corp</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">$1,500.00</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">2024-01-12</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">Received</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium">View</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#PO0460</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">USB Cable 3m</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">100</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Equipment</td>
-                        <td class="px-6 py-4 text-sm text-slate-600">USB 2.0 extension cable, 3 meters, black, high speed data transfer</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">CablePro Solutions</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">$300.00</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">2024-01-11</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">Cancelled</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium">View</button>
-                        </td>
-                    </tr>
+                    @if($purchaseOrders->count() > 0)
+                        @foreach($purchaseOrders as $po)
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#PO{{ $po->id }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">#REQ00{{ sprintf('%03d', $po->request_id) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $po->supplier }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $po->price }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $po->expected_delivery_date }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ getStatusClass($po->status) }}">
+                                        {{ $po->status }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $po->created_at->format('M d, Y') }}</td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-slate-500">
+                                No purchase orders found. Click "Create Purchase Order" to add one.
+                            </td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
 
-        {{-- Pagination --}}
-        <div class="bg-slate-50 px-6 py-3 flex items-center justify-between border-t border-slate-200">
-            <div class="text-sm text-slate-700">
-                Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">68</span> results
+{{-- PO Creation Modal --}}
+<div id="poModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-slate-900">Create Purchase Order</h2>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-6 w-6">
+                        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
             </div>
-            <div class="flex gap-2">
-                <button class="px-3 py-1 text-sm border border-slate-300 rounded-md hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed" disabled>Previous</button>
-                <button class="px-3 py-1 text-sm bg-blue-600 text-white rounded-md">1</button>
-                <button class="px-3 py-1 text-sm border border-slate-300 rounded-md hover:bg-white">2</button>
-                <button class="px-3 py-1 text-sm border border-slate-300 rounded-md hover:bg-white">3</button>
-                <button class="px-3 py-1 text-sm border border-slate-300 rounded-md hover:bg-white">Next</button>
-            </div>
+
+            <form action="{{ route('admin.purchase-orders.store') }}" method="POST" class="space-y-6">
+                @csrf
+                
+                <!-- Request ID -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Request ID</label>
+                    <select name="request_id" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Choose a request...</option>
+                        @foreach($requests as $request)
+                            <option value="{{ $request->id }}" {{ old('request_id') == $request->id ? 'selected' : '' }}>
+                                #REQ00{{ sprintf('%03d', $request->id) }} - {{ $request->item_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('request_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Company Name -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                    <select name="supplier" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Choose a company...</option>
+                        @foreach($suppliers as $supplier)
+                            <option value="{{ $supplier->company_name }}" {{ old('supplier') == $supplier->company_name ? 'selected' : '' }}>
+                                {{ $supplier->company_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('supplier')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Price -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Price</label>
+                    <input type="number" name="price" required min="1" value="{{ old('price') }}"
+                           placeholder="Enter price"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    @error('price')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Expected Delivery Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Expected Delivery Date</label>
+                    <input type="date" name="expected_delivery_date" required value="{{ old('expected_delivery_date') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    @error('expected_delivery_date')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Notes -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                    <textarea name="notes" rows="4" placeholder="Additional notes..."
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('notes') }}</textarea>
+                    @error('notes')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeModal()" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Create Purchase Order
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+function openModal() {
+    document.getElementById('poModal').classList.remove('hidden');
+    document.getElementById('poModal').classList.add('flex');
+}
+
+function closeModal() {
+    document.getElementById('poModal').classList.add('hidden');
+    document.getElementById('poModal').classList.remove('flex');
+}
+
+// Close modal when clicking outside
+document.getElementById('poModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+</script>
+
+@php
+function getStatusClass($status) {
+    switch($status) {
+        case 'ordered': return 'bg-blue-100 text-blue-700';
+        case 'approved': return 'bg-green-100 text-green-700';
+        case 'cancelled': return 'bg-red-100 text-red-700';
+        default: return 'bg-gray-100 text-gray-700';
+    }
+}
+@endphp
 @endsection
