@@ -67,12 +67,12 @@
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
                    Returns
                 </a>
-                <a href="{{ route('warehouse.storage') }}" 
+                {{-- <a href="{{ route('warehouse.storage') }}" 
                    data-item="warehouse-storage"
                    data-section="warehouse"
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
                    Storage Location
-                </a>
+                </a> --}}
             </div>
         </div>
 

@@ -51,6 +51,14 @@ class Inbound extends Model
     }
 
     /**
+     * Get the inventory record for this inbound shipment.
+     */
+    public function inventory()
+    {
+        return $this->hasOne(Inventory::class);
+    }
+
+    /**
      * Get the request associated with this inbound shipment through the purchase order.
      */
     public function request()

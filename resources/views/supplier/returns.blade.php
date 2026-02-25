@@ -23,7 +23,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Total Returns</dt>
-                            <dd class="text-lg font-medium text-gray-900">2</dd>
+                            <dd class="text-lg font-medium text-gray-900">{{ $stats['total'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Pending</dt>
-                            <dd class="text-lg font-medium text-gray-900">1</dd>
+                            <dd class="text-lg font-medium text-gray-900">{{ $stats['pending'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -62,8 +62,8 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Processing</dt>
-                            <dd class="text-lg font-medium text-gray-900">1</dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Approved</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ $stats['approved'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Completed</dt>
-                            <dd class="text-lg font-medium text-gray-900">0</dd>
+                            <dd class="text-lg font-medium text-gray-900">{{ $stats['completed'] }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -96,9 +96,6 @@
         <div class="px-4 py-5 sm:p-6">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Return Requests</h3>
-                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    New Return Request
-                </button>
             </div>
             
             <div class="overflow-x-auto">
@@ -106,87 +103,124 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Return ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PO ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#RET-001</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#ORD-001</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">ABC Corporation</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Damaged Product</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$500</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dec 22, 2024</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <button class="text-blue-600 hover:text-blue-900 mr-3">View</button>
-                                <button class="text-green-600 hover:text-green-900">Approve</button>
-                                <button class="text-red-600 hover:text-red-900 ml-3">Reject</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#RET-002</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#ORD-002</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">XYZ Industries</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Wrong Item</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$1,200</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Processing</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dec 21, 2024</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <button class="text-blue-600 hover:text-blue-900 mr-3">View</button>
-                                <button class="text-purple-600 hover:text-purple-900">Track</button>
-                            </td>
-                        </tr>
+                        @forelse($returns as $return)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#RET{{ str_pad($return->id, 3, '0', STR_PAD_LEFT) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#PO{{ $return->inventory->inbound->purchaseOrder->id }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $return->inventory->inbound->purchaseOrder->request->item_name ?? 'N/A' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $return->quantity }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ ucfirst($return->reason) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ number_format(($return->quantity ?? 0) * ($return->inventory->inbound->purchaseOrder->price ?? 0), 2) }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @switch($return->status)
+                                        @case('pending')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                            @break
+                                        @case('approved')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Approved</span>
+                                            @break
+                                        @case('rejected')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Rejected</span>
+                                            @break
+                                        @case('completed')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                            @break
+                                    @endswitch
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $return->created_at->format('M d, Y') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="{{ route('supplier.return.show', $return->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                                    
+                                    @if($return->status === 'pending')
+                                        <button onclick="updateReturnStatus({{ $return->id }}, 'approved')" class="text-green-600 hover:text-green-900 mr-3">Approve</button>
+                                        <button onclick="updateReturnStatus({{ $return->id }}, 'rejected')" class="text-red-600 hover:text-red-900">Reject</button>
+                                    @elseif($return->status === 'approved')
+                                        <button onclick="updateReturnStatus({{ $return->id }}, 'completed')" class="text-purple-600 hover:text-purple-900">Complete</button>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="px-6 py-12 text-center text-gray-500">
+                                    <div class="flex flex-col items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-12 w-12 text-gray-300 mb-3">
+                                            <path d="M9 15L3 9m0 0l6-6m-6 6h12a2 2 0 012 2v3a2 2 0 01-2 2H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <p class="text-lg font-medium text-gray-600">No returns found</p>
+                                        <p class="text-sm text-gray-500 mt-1">No return requests have been made for your products yet.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
-    <!-- Return Form Modal (Hidden by default) -->
-    <div id="returnModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div class="mt-3">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">New Return Request</h3>
-                <form class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Order ID</label>
-                        <input type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Reason</label>
-                        <select class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            <option>Damaged Product</option>
-                            <option>Wrong Item</option>
-                            <option>Quality Issues</option>
-                            <option>Other</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-                    </div>
-                    <div class="flex justify-end space-x-2">
-                        <button type="button" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-transparent rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                            Cancel
-                        </button>
-                        <button type="submit" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Submit
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<script>
+// Update return status function
+async function updateReturnStatus(returnId, newStatus) {
+    if (!confirm(`Are you sure you want to update the status to "${newStatus}"?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/supplier/returns/${returnId}/update-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                status: newStatus
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification(`Status updated to "${newStatus}" successfully!`, 'success');
+            // Reload the page to show updated status
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            showNotification('Failed to update status. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('An error occurred while updating status.', 'error');
+    }
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+        type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+    }`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
 @endsection

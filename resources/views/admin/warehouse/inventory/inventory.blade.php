@@ -14,7 +14,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-slate-600">Total Stock</p>
-                    <p class="text-2xl font-bold text-slate-900 mt-2">1,765</p>
+                    <p class="text-2xl font-bold text-slate-900 mt-2">{{ $stats['total'] }}</p>
                     <p class="text-sm text-slate-500 mt-1">All items</p>
                 </div>
                 <div class="bg-blue-100 p-3 rounded-lg">
@@ -29,7 +29,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-slate-600">In Stock</p>
-                    <p class="text-2xl font-bold text-green-600 mt-2">1,250</p>
+                    <p class="text-2xl font-bold text-green-600 mt-2">{{ $stats['in_stock'] }}</p>
                     <p class="text-sm text-slate-500 mt-1">Available items</p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-lg">
@@ -44,7 +44,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-slate-600">Low Stock</p>
-                    <p class="text-2xl font-bold text-amber-600 mt-2">415</p>
+                    <p class="text-2xl font-bold text-amber-600 mt-2">{{ $stats['low_stock'] }}</p>
                     <p class="text-sm text-slate-500 mt-1">Need reorder</p>
                 </div>
                 <div class="bg-amber-100 p-3 rounded-lg">
@@ -59,7 +59,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-slate-600">Out of Stock</p>
-                    <p class="text-2xl font-bold text-red-600 mt-2">100</p>
+                    <p class="text-2xl font-bold text-red-600 mt-2">{{ $stats['out_of_stock'] }}</p>
                     <p class="text-sm text-slate-500 mt-1">Items unavailable</p>
                 </div>
                 <div class="bg-red-100 p-3 rounded-lg">
@@ -91,47 +91,136 @@
 
     {{-- Search and Filters --}}
     <div class="mb-6 bg-white rounded-lg border border-slate-200 p-4">
-        <div class="flex gap-4">
+        <form method="GET" action="{{ route('warehouse.inventory') }}" class="flex gap-4">
             <div class="flex-1">
-                <input type="text" placeholder="Search by item name or ID..." class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by item name..." 
+                       class="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                       onkeyup="if(this.value.length >= 2 || this.value.length === 0) { this.form.submit(); }">
             </div>
-            <select class="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option>All Status</option>
-                <option>In Stock</option>
-                <option>Low Stock</option>
-                <option>Out of Stock</option>
+            <select name="status" class="px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="in_stock" {{ request('status') == 'in_stock' ? 'selected' : '' }}>In Stock</option>
+                <option value="low_stock" {{ request('status') == 'low_stock' ? 'selected' : '' }}>Low Stock</option>
+                <option value="out_of_stock" {{ request('status') == 'out_of_stock' ? 'selected' : '' }}>Out of Stock</option>
             </select>
-        </div>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Filter
+            </button>
+            <a href="{{ route('warehouse.inventory') }}" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors">
+                Clear
+            </a>
+        </form>
     </div>
 
     {{-- Inventory Table --}}
     <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
         <table class="w-full">
-            <thead class="bg-white border-b border-slate-200">
+            <thead class="bg-slate-50 border-b border-slate-200">
                 <tr>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-32">Inventory ID</th>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 min-w-[180px]">Item Name</th>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-24">Quantity</th>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-36">Location</th>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 min-w-[300px]">Description</th>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-28">Status</th>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-20">Actions</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-32">Inventory ID</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-32">PO ID</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-32">Item Name</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-24">Quantity</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-28">Price</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-28">Type</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-36">Location</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-32">Supplier</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-28">Date</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-28">Status</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-slate-700 w-20">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#INV001</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Office Paper A4</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">500</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Warehouse A-1</td>
-                    <td class="px-6 py-4 text-sm text-slate-600">Standard A4 office paper, 80gsm, white</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">In Stock</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <button class="text-blue-600 hover:text-blue-800 font-medium transition-colors">View</button>
-                    </td>
-                </tr>
+                @forelse($inventories as $inventory)
+                    @php
+                        // Safe data extraction with null checks
+                        $quantity = 0;
+                        $itemName = 'N/A';
+                        $poId = 'N/A';
+                        $itemType = 'N/A';
+                        $location = 'N/A';
+                        $supplier = 'N/A';
+                        $date = 'N/A';
+                        $price = 'N/A';
+                        
+                        if ($inventory && $inventory->inbound) {
+                            $quantity = $inventory->quantity ?? 0;
+                            $date = $inventory->inbound->created_at ? $inventory->inbound->created_at->format('M d, Y') : 'N/A';
+                            
+                            if ($inventory->inbound->purchaseOrder) {
+                                $poId = $inventory->inbound->purchaseOrder->id;
+                                $price = number_format($inventory->inbound->purchaseOrder->price ?? 0, 2);
+                                
+                                // Handle both cases: supplier as object (relationship) or string (direct field)
+                                if (is_object($inventory->inbound->purchaseOrder->supplier)) {
+                                    $supplier = $inventory->inbound->purchaseOrder->supplier->company_name ?? 'N/A';
+                                } else {
+                                    $supplier = $inventory->inbound->purchaseOrder->supplier ?? 'N/A';
+                                }
+                                
+                                if ($inventory->inbound->purchaseOrder->request) {
+                                    $itemName = $inventory->inbound->purchaseOrder->request->item_name ?? 'N/A';
+                                    $itemType = $inventory->inbound->purchaseOrder->request->type ?? 'N/A';
+                                }
+                            }
+                            
+                            $location = $inventory->inbound->storageLocation ? 
+                                $inventory->inbound->storageLocation->name : 
+                                ($inventory->inbound->location ?? 'N/A');
+                        }
+                        
+                        // Use calculated status from controller or calculate fallback
+                        $status = $inventory->calculated_status ?? 'in_stock';
+                        
+                        // Determine status display
+                        if ($status == 'out_of_stock' || $quantity == 0) {
+                            $statusClass = 'bg-red-100 text-red-700';
+                            $statusText = 'Out of Stock';
+                        } elseif ($status == 'low_stock' || $quantity <= 20) {
+                            $statusClass = 'bg-amber-100 text-amber-700';
+                            $statusText = 'Low Stock';
+                        } else {
+                            $statusClass = 'bg-green-100 text-green-700';
+                            $statusText = 'In Stock';
+                        }
+                    @endphp
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-slate-900">#INV{{ str_pad($inventory->id ?? 0, 3, '0', STR_PAD_LEFT) }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-900">#PO{{ $poId }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-900">{{ $itemName }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-900">{{ $quantity }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-900">{{ $price }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-900">{{ ucfirst($itemType) }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-600">{{ $location }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-900">{{ $supplier }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-600">{{ $date }}</td>
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ $statusClass }}">
+                                {{ $statusText }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm">
+                            <a href="{{ route('admin.inventory.show', $inventory->id ?? 0) }}" class="text-blue-600 hover:text-blue-800 font-medium transition-colors">View</a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="10" class="px-6 py-12 text-center text-slate-500">
+                            <div class="flex flex-col items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-12 w-12 text-slate-300 mb-3">
+                                    <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                @if(request('search') || request('status'))
+                                    <p class="text-lg font-medium text-slate-600">No inventory items found</p>
+                                    <p class="text-sm text-slate-500 mt-1">Try adjusting your search or filter criteria</p>
+                                @else
+                                    <p class="text-lg font-medium text-slate-600">No inventory items found</p>
+                                    <p class="text-sm text-slate-500 mt-1">Move inbound shipments to inventory to get started</p>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
@@ -139,14 +228,10 @@
     {{-- Pagination --}}
     <div class="bg-slate-50 px-6 py-3 flex items-center justify-between border-t border-slate-200">
         <div class="text-sm text-slate-700">
-            Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">97</span> results
+            Showing <span class="font-medium">{{ $inventories->firstItem() }}</span> to <span class="font-medium">{{ $inventories->lastItem() }}</span> of <span class="font-medium">{{ $inventories->total() }}</span> results
         </div>
         <div class="flex gap-2">
-            <button class="px-3 py-1 text-sm border border-slate-300 rounded-md hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed" disabled>Previous</button>
-            <button class="px-3 py-1 text-sm bg-blue-600 text-white rounded-md">1</button>
-            <button class="px-3 py-1 text-sm border border-slate-300 rounded-md hover:bg-white">2</button>
-            <button class="px-3 py-1 text-sm border border-slate-300 rounded-md hover:bg-white">3</button>
-            <button class="px-3 py-1 text-sm border border-slate-300 rounded-md hover:bg-white">Next</button>
+            {{ $inventories->links() }}
         </div>
     </div>
 </div>

@@ -51,9 +51,9 @@ Route::get('/supplier/inbound', [App\Http\Controllers\Supplier\SupplierInboundCo
 Route::get('/supplier/inbound/{id}', [App\Http\Controllers\Supplier\SupplierInboundController::class, 'show'])->name('supplier.inbound.show')->middleware('auth:supplier');
 Route::post('/supplier/inbound/{id}/update-status', [App\Http\Controllers\Supplier\SupplierInboundController::class, 'updateStatus'])->name('supplier.inbound.update-status')->middleware('auth:supplier');
 
-Route::get('/supplier/returns', function () {
-    return view('supplier.returns');
-})->name('supplier.returns')->middleware('auth:supplier');
+Route::get('/supplier/returns', [App\Http\Controllers\supplier\SupplierReturnController::class, 'index'])->name('supplier.returns')->middleware('auth:supplier');
+Route::get('/supplier/returns/{id}', [App\Http\Controllers\supplier\SupplierReturnController::class, 'show'])->name('supplier.return.show')->middleware('auth:supplier');
+Route::post('/supplier/returns/{id}/update-status', [App\Http\Controllers\supplier\SupplierReturnController::class, 'updateStatus'])->name('supplier.return.update-status')->middleware('auth:supplier');
 
 Route::get('/supplier/requirements', [App\Http\Controllers\Supplier\SupplierRequirementController::class, 'index'])->name('supplier.requirements')->middleware('auth:supplier');
 Route::post('/supplier/requirements', [App\Http\Controllers\Supplier\SupplierRequirementController::class, 'store'])->name('supplier.requirements.store')->middleware('auth:supplier');
@@ -65,13 +65,17 @@ Route::get('/dashboard', function () {
     return view('admin.dashboard');
 })->name('dashboard');
 
-Route::get('/warehouse/inventory', function () {
-    return view('admin.warehouse.inventory.inventory');
-})->name('warehouse.inventory');
+Route::get('/warehouse/inventory', [App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('warehouse.inventory');
+Route::get('/admin/inventory/{id}', [App\Http\Controllers\Admin\InventoryController::class, 'show'])->name('admin.inventory.show');
+Route::get('/admin/inventory/{id}/edit', [App\Http\Controllers\Admin\InventoryController::class, 'edit'])->name('admin.inventory.edit');
+Route::put('/admin/inventory/{id}', [App\Http\Controllers\Admin\InventoryController::class, 'update'])->name('admin.inventory.update');
+Route::delete('/admin/inventory/{id}', [App\Http\Controllers\Admin\InventoryController::class, 'destroy'])->name('admin.inventory.destroy');
+Route::post('/admin/inventory/{id}/update-status', [App\Http\Controllers\Admin\InventoryController::class, 'updateStatus'])->name('admin.inventory.update-status');
 
 Route::get('/warehouse/inbound', [App\Http\Controllers\Admin\InboundController::class, 'index'])->name('warehouse.inbound');
 Route::get('/admin/inbound/{id}', [App\Http\Controllers\Admin\InboundController::class, 'show'])->name('admin.inbound.show');
 Route::put('/admin/inbound/{id}', [App\Http\Controllers\Admin\InboundController::class, 'update'])->name('admin.inbound.update');
+Route::post('/admin/inbound/{id}/move-to-inventory', [App\Http\Controllers\Admin\InboundController::class, 'moveToInventory'])->name('admin.inbound.move-to-inventory');
 Route::post('/admin/inbound/{id}/update-status', [App\Http\Controllers\Admin\InboundController::class, 'updateStatus'])->name('admin.inbound.update-status');
 Route::post('/admin/inbound/store', [App\Http\Controllers\Admin\InboundController::class, 'store'])->name('admin.inbound.store');
 
@@ -81,13 +85,15 @@ Route::post('/warehouse/storage', [App\Http\Controllers\Admin\StorageLocationCon
 Route::put('/warehouse/storage/{id}', [App\Http\Controllers\Admin\StorageLocationController::class, 'update'])->name('warehouse.storage.update');
 Route::delete('/warehouse/storage/{id}', [App\Http\Controllers\Admin\StorageLocationController::class, 'destroy'])->name('warehouse.storage.destroy');
 
-Route::get('/warehouse/outbound', function () {
-    return view('admin.warehouse.outbound.outbound');
-})->name('warehouse.outbound');
+Route::get('/warehouse/outbound', [App\Http\Controllers\Admin\OutboundController::class, 'index'])->name('warehouse.outbound');
+Route::get('/admin/outbound/{id}', [App\Http\Controllers\Admin\OutboundController::class, 'show'])->name('admin.outbound.show');
+Route::post('/admin/outbound/store', [App\Http\Controllers\Admin\OutboundController::class, 'store'])->name('admin.outbound.store');
+Route::post('/admin/outbound/{id}/update-status', [App\Http\Controllers\Admin\OutboundController::class, 'updateStatus'])->name('admin.outbound.update-status');
 
-Route::get('/warehouse/return', function () {
-    return view('admin.warehouse.return.return');
-})->name('warehouse.return');
+Route::get('/warehouse/return', [App\Http\Controllers\Admin\ItemReturnController::class, 'index'])->name('warehouse.return');
+Route::get('/admin/return/{id}', [App\Http\Controllers\Admin\ItemReturnController::class, 'show'])->name('admin.return.show');
+Route::post('/admin/return/store', [App\Http\Controllers\Admin\ItemReturnController::class, 'store'])->name('admin.return.store');
+Route::post('/admin/return/{id}/update-status', [App\Http\Controllers\Admin\ItemReturnController::class, 'updateStatus'])->name('admin.return.update-status');
 
 Route::get('/procurement/request', function () {
     return view('admin.procuments.request.request');

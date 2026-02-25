@@ -27,7 +27,7 @@ class InboundController extends Controller
         $storageLocations = StorageLocation::orderBy('name')->get();
 
         // Build the query for inbound shipments
-        $query = Inbound::with(['purchaseOrder.request', 'creator', 'storageLocation'])
+        $query = Inbound::with(['purchaseOrder.request', 'creator', 'storageLocation', 'inventory'])
             ->orderBy('created_at', 'desc');
 
         // Apply status filter if provided
@@ -146,6 +146,43 @@ class InboundController extends Controller
 
         return redirect()->route('admin.inbound.show', $inbound->id)
             ->with('success', 'Inbound shipment updated successfully!');
+    }
+
+    /**
+     * Move inbound shipment to inventory.
+     */
+    public function moveToInventory(Request $request, $id)
+    {
+        $inbound = Inbound::findOrFail($id);
+
+        // Check if inbound is received
+        if ($inbound->status !== 'received') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only received inbound shipments can be moved to inventory.'
+            ], 400);
+        }
+
+        // Check if already moved to inventory
+        $existingInventory = \App\Models\Inventory::where('inbound_id', $inbound->id)->first();
+        if ($existingInventory) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This inbound shipment has already been moved to inventory.'
+            ], 400);
+        }
+
+        // Create inventory record
+        \App\Models\Inventory::create([
+            'inbound_id' => $inbound->id,
+            'quantity' => $inbound->quantity_received,
+            'status' => 'in_stock',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Inbound shipment moved to inventory successfully!'
+        ]);
     }
 
     /**

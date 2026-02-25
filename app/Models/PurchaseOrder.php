@@ -32,6 +32,14 @@ class PurchaseOrder extends Model
     }
 
     /**
+     * Get the supplier that owns the purchase order.
+     */
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    /**
      * Get the inbound shipment for this purchase order.
      */
     public function inbound()

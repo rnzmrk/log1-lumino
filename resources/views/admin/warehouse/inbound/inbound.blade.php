@@ -119,9 +119,10 @@
                     <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-32">PO ID</th>
                     <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 min-w-[200px]">Item Name</th>
                     <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-28">Quantity</th>
+                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-28">Price</th>
                     <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-32">Quantity Received</th>
                     <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-40">Location</th>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 min-w-[300px]">Description</th>
+                    <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-40">Description</th>
                     <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-40">Supplier</th>
                     <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-36">Status Instance</th>
                     <th class="px-6 py-4 text-left text-sm font-medium text-slate-700 w-32">Actions</th>
@@ -134,6 +135,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">#PO{{ $inbound->purchaseOrder->id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $inbound->purchaseOrder->request->item_name ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $inbound->purchaseOrder->request->quantity ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ number_format($inbound->purchaseOrder->price ?? 0, 2) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $inbound->quantity_received }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
     {{ $inbound->storageLocation ? $inbound->storageLocation->name : ($inbound->location ?? 'N/A') }}
@@ -164,6 +166,11 @@
                                 <button onclick="updateStatus({{ $inbound->id }}, 'received')" class="text-green-600 hover:text-green-800 font-medium transition-colors">Receive</button>
                             @else
                                 <button class="text-slate-400 font-medium cursor-not-allowed" disabled>Receive</button>
+                            @endif
+                            @if($inbound->status === 'received' && !$inbound->inventory)
+                                <button onclick="moveToInventory({{ $inbound->id }})" class="text-purple-600 hover:text-purple-800 font-medium transition-colors ml-3">Moved</button>
+                            @elseif($inbound->inventory)
+                                <span class="text-green-600 font-medium ml-3">In Inventory</span>
                             @endif
                         </td>
                     </tr>
@@ -431,6 +438,34 @@ function updateStatus(inboundId, newStatus) {
     .catch(error => {
         console.error('Error:', error);
         alert('Error updating status');
+    });
+}
+
+// Move to inventory function
+function moveToInventory(inboundId) {
+    if (!confirm('Are you sure you want to move this inbound shipment to inventory?')) {
+        return;
+    }
+    
+    fetch(`/admin/inbound/${inboundId}/move-to-inventory`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload the page to show updated status
+            window.location.reload();
+        } else {
+            alert('Error moving to inventory: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error moving to inventory');
     });
 }
 </script>
