@@ -132,17 +132,16 @@ Route::put('/admin/assets/{id}', [App\Http\Controllers\Admin\AssetController::cl
 Route::delete('/admin/assets/{id}', [App\Http\Controllers\Admin\AssetController::class, 'destroy'])->name('admin.assets.destroy');
 Route::post('/admin/assets/{id}/status', [App\Http\Controllers\Admin\AssetController::class, 'updateStatus'])->name('admin.assets.update-status');
 
-Route::get('/logistics/vehicles', function () {
-    return view('admin.logistics.list.list-vehicle');
-})->name('logistics.vehicles');
+Route::get('/logistics/vehicles', [App\Http\Controllers\Admin\VehicleController::class, 'index'])->name('logistics.vehicles');
+Route::get('/logistics/vehicles/create', [App\Http\Controllers\Admin\VehicleController::class, 'create'])->name('logistics.vehicles.create');
+Route::post('/logistics/vehicles', [App\Http\Controllers\Admin\VehicleController::class, 'store'])->name('logistics.vehicles.store');
+Route::get('/logistics/vehicles/maintenance', [App\Http\Controllers\Admin\VehicleController::class, 'maintenance'])->name('logistics.vehicles.maintenance');
+Route::post('/admin/vehicles/maintenance', [App\Http\Controllers\Admin\VehicleController::class, 'setMaintenance'])->name('admin.vehicles.maintenance');
+Route::post('/admin/vehicles/maintenance/{id}/status', [App\Http\Controllers\Admin\VehicleController::class, 'updateMaintenanceStatus'])->name('admin.vehicles.maintenance.update-status');
 
 Route::get('/logistics/tracking', function () {
     return view('admin.logistics.tracking.vehicle-tracking');
 })->name('logistics.tracking');
-
-Route::get('/logistics/maintenance', function () {
-    return view('admin.logistics.maintnance.vehicle-maintenance');
-})->name('logistics.maintenance');
 
 Route::get('/documents/reports', function () {
     return view('admin.documents.report.report');

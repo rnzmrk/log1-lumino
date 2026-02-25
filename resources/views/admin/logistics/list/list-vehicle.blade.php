@@ -10,11 +10,11 @@
 
     {{-- Action Buttons --}}
     <div class="mb-6 flex gap-3 px-4">
-        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2" onclick="window.location.href='{{ route('logistics.vehicles.create') }}'">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
                 <path d="M12 4v16m8-8H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            Add Vehicle
+            Add Vehicle 
         </button>
         <button class="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
@@ -70,102 +70,63 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-200">
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#VHL001</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Toyota</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">SUV</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">ABC-1234</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">White</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">John Smith</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Active</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium mr-3">View</button>
-                            <button class="text-amber-600 hover:text-amber-800 font-medium mr-3">Maintenance</button>
-                            <button class="text-purple-600 hover:text-purple-800 font-medium">Replacement</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#VHL002</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Honda</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">6 Seater</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">XYZ-5678</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Black</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Maria Garcia</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Active</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium mr-3">View</button>
-                            <button class="text-amber-600 hover:text-amber-800 font-medium mr-3">Maintenance</button>
-                            <button class="text-purple-600 hover:text-purple-800 font-medium">Replacement</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#VHL003</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Ford</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Van</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">DEF-9012</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Blue</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Robert Johnson</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Maintenance</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium mr-3">View</button>
-                            <button class="text-amber-600 hover:text-amber-800 font-medium mr-3">Maintenance</button>
-                            <button class="text-purple-600 hover:text-purple-800 font-medium">Replacement</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#VHL004</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Nissan</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">4 Seater</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">GHI-3456</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Red</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Emily Davis</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Active</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium mr-3">View</button>
-                            <button class="text-amber-600 hover:text-amber-800 font-medium mr-3">Maintenance</button>
-                            <button class="text-purple-600 hover:text-purple-800 font-medium">Replacement</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#VHL005</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Isuzu</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Truck</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">JKL-7890</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Yellow</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Michael Brown</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">Replacement</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium mr-3">View</button>
-                            <button class="text-amber-600 hover:text-amber-800 font-medium mr-3">Maintenance</button>
-                            <button class="text-purple-600 hover:text-purple-800 font-medium">Replacement</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#VHL006</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Mitsubishi</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">SUV</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">MNO-2345</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Silver</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">Sarah Wilson</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Active</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <button class="text-blue-600 hover:text-blue-800 font-medium mr-3">View</button>
-                            <button class="text-amber-600 hover:text-amber-800 font-medium mr-3">Maintenance</button>
-                            <button class="text-purple-600 hover:text-purple-800 font-medium">Replacement</button>
-                        </td>
-                    </tr>
+                    @forelse($vehicles as $vehicle)
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">#VHL{{ str_pad($vehicle->id, 3, '0', STR_PAD_LEFT) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $vehicle->brand ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $vehicle->type ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $vehicle->plate_number ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ $vehicle->color ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ $vehicle->driver ?? 'Not Assigned' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @switch($vehicle->status ?? 'active')
+                                    @case('active')
+                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Active</span>
+                                        @break
+                                    @case('maintenance')
+                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Maintenance</span>
+                                        @break
+                                    @case('replacement')
+                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">Replacement</span>
+                                        @break
+                                    @case('inactive')
+                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">Inactive</span>
+                                        @break
+                                    @default
+                                        <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Active</span>
+                                @endswitch
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="text-blue-600 hover:text-blue-800 font-medium mr-3">View</button>
+                                @if($vehicle->status === 'maintenance')
+                                    <button class="text-amber-300 font-medium mr-3 cursor-not-allowed" disabled title="Vehicle already under maintenance">
+                                        Maintenance
+                                    </button>
+                                @else
+                                    <button onclick="openMaintenanceModal({{ $vehicle->id }})" class="text-amber-600 hover:text-amber-800 font-medium mr-3">
+                                        Maintenance
+                                    </button>
+                                @endif
+                                <button class="text-purple-600 hover:text-purple-800 font-medium">Replacement</button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-500">
+                                <div class="flex flex-col items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-12 w-12 text-slate-300 mb-3">
+                                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <p class="text-lg font-medium text-slate-600">No vehicles found</p>
+                                    <p class="text-sm text-slate-500 mt-1">Get started by adding your first vehicle</p>
+                                    <button onclick="window.location.href='{{ route('logistics.vehicles.create') }}'" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        Add Vehicle
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -186,4 +147,104 @@
         </div>
     </div>
 </div>
+
+{{-- Maintenance Modal --}}
+<div id="maintenanceModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-slate-900">Schedule Maintenance</h3>
+            <button onclick="closeMaintenanceModal()" class="text-slate-400 hover:text-slate-600">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="w-6 h-6">
+                    <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+        
+        <form id="maintenanceForm" onsubmit="submitMaintenance(event)">
+            @csrf
+            <input type="hidden" id="vehicleId" name="vehicle_id">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-slate-700 mb-2">Maintenance Reason</label>
+                <textarea name="maintenance_reason" required rows="3"
+                          class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Describe the maintenance needed..."></textarea>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-700 mb-2">Maintenance Date</label>
+                <input type="date" name="maintenance_date" required
+                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            
+            <div class="flex gap-3">
+                <button type="button" onclick="closeMaintenanceModal()" 
+                        class="flex-1 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" 
+                        class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
+                    Schedule Maintenance
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openMaintenanceModal(vehicleId) {
+    document.getElementById('vehicleId').value = vehicleId;
+    document.getElementById('maintenanceModal').classList.remove('hidden');
+    document.getElementById('maintenanceModal').classList.add('flex');
+}
+
+function closeMaintenanceModal() {
+    document.getElementById('maintenanceModal').classList.add('hidden');
+    document.getElementById('maintenanceModal').classList.remove('flex');
+    document.getElementById('maintenanceForm').reset();
+}
+
+function submitMaintenance(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Scheduling...';
+    
+    fetch('/admin/vehicles/maintenance', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            vehicle_id: formData.get('vehicle_id'),
+            maintenance_reason: formData.get('maintenance_reason'),
+            maintenance_date: formData.get('maintenance_date')
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeMaintenanceModal();
+            location.reload(); // Reload to show updated status
+        } else {
+            alert('Error: ' + (data.message || 'Failed to schedule maintenance'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error scheduling maintenance');
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    });
+}
+</script>
 @endsection

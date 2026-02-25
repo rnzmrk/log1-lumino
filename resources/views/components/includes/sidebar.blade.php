@@ -191,7 +191,7 @@
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">
                    Vehicle Tracking
                 </a>
-                <a href="{{ route('logistics.maintenance') }}" 
+                <a href="{{ route('logistics.vehicles.maintenance') }}" 
                    data-item="logistics-maintenance"
                    data-section="logistics"
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">

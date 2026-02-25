@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->string('brand')->nullable();
-            $table->string('model')->nullable();
-            $table->string('plate_number')->nullable()->unique();
-            $table->string('type')->nullable();
-            $table->string('color')->nullable();
-            $table->year('year')->nullable();
+            $table->string('vehicle_type', 100)->nullable();
+            $table->string('brand', 255)->nullable();
+            $table->string('model', 255)->nullable();
+            $table->string('license_plate', 20)->nullable()->unique();
+            $table->integer('capacity')->nullable();
+            $table->string('color', 50)->nullable();
+            $table->string('driver', 255)->nullable();
             $table->enum('status', ['active', 'maintenance', 'replacement', 'inactive'])->nullable()->default('active');
-            $table->string('driver')->nullable();
             $table->timestamps();
         });
     }
