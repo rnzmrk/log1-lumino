@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\auth\SupplierAuthController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes with web middleware
@@ -51,13 +52,13 @@ Route::get('/supplier', function () {
 })->name('supplier.website');
 
 // Supplier Authentication Routes
-Route::get('/supplier/login', [App\Http\Controllers\Auth\SupplierAuthController::class, 'showLogin'])->name('supplier.login');
-Route::post('/supplier/login', [App\Http\Controllers\Auth\SupplierAuthController::class, 'login'])->name('supplier.login.submit');
+Route::get('/supplier/login', [SupplierAuthController::class, 'showLogin'])->name('supplier.login');
+Route::post('/supplier/login', [SupplierAuthController::class, 'login'])->name('supplier.login.submit');
 
-Route::get('/supplier/register', [App\Http\Controllers\Auth\SupplierAuthController::class, 'showRegister'])->name('supplier.register');
-Route::post('/supplier/register', [App\Http\Controllers\Auth\SupplierAuthController::class, 'register'])->name('supplier.register.submit');
+Route::get('/supplier/register', [SupplierAuthController::class, 'showRegister'])->name('supplier.register');
+Route::post('/supplier/register', [SupplierAuthController::class, 'register'])->name('supplier.register.submit');
 
-Route::post('/supplier/logout', [App\Http\Controllers\Auth\SupplierAuthController::class, 'logout'])->name('supplier.logout');
+Route::post('/supplier/logout', [SupplierAuthController::class, 'logout'])->name('supplier.logout');
 
 Route::get('/supplier/dashboard', function () {
     return view('supplier.dashboard');
