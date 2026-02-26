@@ -10,7 +10,7 @@
 
     {{-- Action Buttons --}}
     <div class="mb-6 flex gap-3 px-4">
-        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+        <button onclick="exportAllReports()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
                 <path d="M3 12h18m-9-9v18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
@@ -333,26 +333,124 @@
 
     </div>
 
-    {{-- Summary Stats --}}
-    <div class="mt-8 px-4 bg-white rounded-lg border border-slate-200 p-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="text-center">
-                <div class="text-2xl font-bold text-slate-900">12</div>
-                <div class="text-sm text-slate-600">Total Reports</div>
-            </div>
-            <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600">447</div>
-                <div class="text-sm text-slate-600">Total Records</div>
-            </div>
-            <div class="text-center">
-                <div class="text-2xl font-bold text-green-600">8</div>
-                <div class="text-sm text-slate-600">Exported Today</div>
-            </div>
-            <div class="text-center">
-                <div class="text-2xl font-bold text-amber-600">5 mins</div>
-                <div class="text-sm text-slate-600">Avg. Export Time</div>
-            </div>
-        </div>
-    </div>
 </div>
+
+<script>
+// Export individual report functions
+function exportVehicles() {
+    window.location.href = '/reports/export/vehicles';
+}
+
+function exportMaintenance() {
+    window.location.href = '/reports/export/maintenance';
+}
+
+function exportUsers() {
+    window.location.href = '/reports/export/users';
+}
+
+function exportPurchaseOrders() {
+    window.location.href = '/reports/export/purchase-orders';
+}
+
+function exportRequests() {
+    window.location.href = '/reports/export/requests';
+}
+
+// Export all reports function
+function exportAllReports() {
+    // Show loading state
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Exporting...';
+    button.disabled = true;
+    
+    // Array of all export functions
+    const exports = [
+        { name: 'Vehicles', url: '/reports/export/vehicles' },
+        { name: 'Maintenance', url: '/reports/export/maintenance' },
+        { name: 'Users', url: '/reports/export/users' },
+        { name: 'Purchase Orders', url: '/reports/export/purchase-orders' },
+        { name: 'Requests', url: '/reports/export/requests' }
+    ];
+    
+    // Download all files with a small delay between each
+    exports.forEach((exportItem, index) => {
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.href = exportItem.url;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Reset button on last export
+            if (index === exports.length - 1) {
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 1000);
+            }
+        }, index * 500); // 500ms delay between downloads
+    });
+}
+
+// Add click handlers to all export buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // Vehicle List button
+    const vehicleButtons = document.querySelectorAll('button');
+    vehicleButtons.forEach(button => {
+        const card = button.closest('.bg-white');
+        if (card) {
+            const title = card.querySelector('h3');
+            if (title) {
+                const titleText = title.textContent.trim();
+                
+                switch(titleText) {
+                    case 'Vehicle List':
+                        button.setAttribute('onclick', 'exportVehicles()');
+                        break;
+                    case 'Vehicle Maintenance':
+                        button.setAttribute('onclick', 'exportMaintenance()');
+                        break;
+                    case 'Vehicle Tracking':
+                        button.setAttribute('onclick', 'exportVehicles()');
+                        break;
+                    case 'Asset List':
+                        button.setAttribute('onclick', 'exportVehicles()');
+                        break;
+                    case 'Asset Maintenance':
+                        button.setAttribute('onclick', 'exportMaintenance()');
+                        break;
+                    case 'Asset Request':
+                        button.setAttribute('onclick', 'exportRequests()');
+                        break;
+                    case 'Purchase Order':
+                        button.setAttribute('onclick', 'exportPurchaseOrders()');
+                        break;
+                    case 'Procurement Request':
+                        button.setAttribute('onclick', 'exportRequests()');
+                        break;
+                    case 'Supplier':
+                        button.setAttribute('onclick', 'exportPurchaseOrders()');
+                        break;
+                    case 'Warehouse Inventory':
+                        button.setAttribute('onclick', 'exportVehicles()');
+                        break;
+                    case 'Warehouse Inbound':
+                        button.setAttribute('onclick', 'exportRequests()');
+                        break;
+                    case 'Warehouse Outbound':
+                        button.setAttribute('onclick', 'exportRequests()');
+                        break;
+                    default:
+                        // Default to vehicles export for unmapped cards
+                        button.setAttribute('onclick', 'exportVehicles()');
+                        break;
+                }
+            }
+        }
+    });
+});
+</script>
 @endsection

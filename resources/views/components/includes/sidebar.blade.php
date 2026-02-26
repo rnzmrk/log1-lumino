@@ -254,7 +254,7 @@
                 <span class="text-xs text-slate-400 transition-transform sidebar-chevron">▾</span>
             </button>
             <div class="sidebar-section-content ml-11 space-y-1 text-slate-600 hidden" data-section="others">
-                <a href="#" 
+                <a href="{{ route('supplier-accounts.index') }}" 
                    data-item="supplier-list"
                    data-section="others"
                    class="sidebar-link block py-2 px-3 transition-all duration-200 border-l-2 border-transparent hover:text-blue-600 hover:bg-slate-50 hover:border-l-2 hover:border-blue-300">

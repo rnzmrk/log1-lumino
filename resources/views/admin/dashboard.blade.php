@@ -16,7 +16,7 @@
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-4">
                     <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        Pending Request for Supplies
+                        Pending Requests
                     </div>
                     <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-amber-50 text-amber-500">
                         {{-- cart icon --}}
@@ -29,18 +29,84 @@
                     </div>
                 </div>
                 <div class="text-2xl font-semibold text-slate-900">
-                    8
+                    {{ $stats['pending_requests'] }}
                 </div>
                 <div class="mt-3 text-xs text-slate-500">
                     Awaiting approval
                 </div>
             </div>
 
-            {{-- Pending Request for Assets --}}
+            {{-- Purchase Orders Pending --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-4">
                     <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        Pending Request for Assets
+                        Purchase Orders
+                    </div>
+                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-purple-50 text-purple-500">
+                        {{-- document icon --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
+                            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-2xl font-semibold text-slate-900">
+                    {{ $stats['pending_purchase_orders'] }}
+                </div>
+                <div class="mt-3 text-xs text-slate-500">
+                    Pending approval
+                </div>
+            </div>
+
+            {{-- Inbound Pending --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        Inbound Shipments
+                    </div>
+                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-blue-50 text-blue-500">
+                        {{-- inbound icon --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
+                            <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-2xl font-semibold text-slate-900">
+                    0
+                </div>
+                <div class="mt-3 text-xs text-slate-500">
+                    Pending arrival
+                </div>
+            </div>
+
+            {{-- Low Stock Items --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        Low Stock Items
+                    </div>
+                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-red-50 text-red-500">
+                        {{-- warning icon --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
+                            <path d="M12 9v4m0 4h.01M3 12a9 9 0 1018 0 9 9 0 00-18 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-2xl font-semibold text-slate-900">
+                    0
+                </div>
+                <div class="mt-3 text-xs text-slate-500">
+                    Need restocking
+                </div>
+            </div>
+        </div>
+
+        {{-- Second row of cards --}}
+        <div class="grid gap-4 md:grid-cols-4 mt-4">
+            {{-- Assets Under Maintenance --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        Assets Maintenance
                     </div>
                     <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-500">
                         {{-- wrench/asset icon --}}
@@ -51,55 +117,73 @@
                     </div>
                 </div>
                 <div class="text-2xl font-semibold text-slate-900">
-                    4
+                    {{ $stats['maintenance_assets'] }}
                 </div>
                 <div class="mt-3 text-xs text-slate-500">
-                    Under review
+                    Under maintenance
                 </div>
             </div>
 
-            {{-- Low Stock --}}
+            {{-- Vehicle Maintenance --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-4">
                     <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        Low Stock
+                        Vehicle Maintenance
                     </div>
-                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-red-50 text-red-500">
+                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-orange-50 text-orange-500">
                         {{-- warning icon --}}
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
-                            <path d="M12 9v4m0 4h.01M3 12a9 9 0 1018 0 9 9 0 00-18 0z"
-                                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 9v4m0 4h.01M3 12a9 9 0 1018 0 9 9 0 00-18 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </div>
                 </div>
                 <div class="text-2xl font-semibold text-slate-900">
-                    5
+                    {{ $stats['maintenance_pending'] }}
                 </div>
-                <div class="mt-3 text-xs text-red-500 flex items-center gap-1">
-                    <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
-                    <span>Items need restock</span>
+                <div class="mt-3 text-xs text-slate-500">
+                    Pending maintenance
                 </div>
             </div>
 
-            {{-- Total of Supplier --}}
+            {{-- Outbound Pending --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-4">
                     <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        Total of Supplier
+                        Outbound Shipments
                     </div>
-                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-purple-50 text-purple-500">
-                        {{-- users icon --}}
+                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-green-50 text-green-500">
+                        {{-- outbound icon --}}
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
-                            <path d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M17 16V4m0 0L21 8m-4-4l-4 4m-4 0v12m0 0l4-4m-4 4l-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </div>
                 </div>
                 <div class="text-2xl font-semibold text-slate-900">
-                    24
+                    0
                 </div>
                 <div class="mt-3 text-xs text-slate-500">
-                    Active suppliers
+                    Pending dispatch
+                </div>
+            </div>
+
+            {{-- Returns Pending --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                        Returns Pending
+                    </div>
+                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-yellow-50 text-yellow-500">
+                        {{-- return icon --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
+                            <path d="M16 15l-4-4 4-4m-4 8H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-2xl font-semibold text-slate-900">
+                    0
+                </div>
+                <div class="mt-3 text-xs text-slate-500">
+                    Pending returns
                 </div>
             </div>
         </div>

@@ -143,9 +143,26 @@ Route::get('/logistics/tracking', function () {
     return view('admin.logistics.tracking.vehicle-tracking');
 })->name('logistics.tracking');
 
-Route::get('/documents/reports', function () {
-    return view('admin.documents.report.report');
-})->name('documents.reports');
+Route::get('/documents/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('documents.reports');
+Route::get('/reports/export/vehicles', [App\Http\Controllers\Admin\ReportController::class, 'exportVehicles'])->name('reports.export.vehicles');
+Route::get('/reports/export/maintenance', [App\Http\Controllers\Admin\ReportController::class, 'exportMaintenance'])->name('reports.export.maintenance');
+Route::get('/reports/export/users', [App\Http\Controllers\Admin\ReportController::class, 'exportUsers'])->name('reports.export.users');
+Route::get('/reports/export/purchase-orders', [App\Http\Controllers\Admin\ReportController::class, 'exportPurchaseOrders'])->name('reports.export.purchase-orders');
+Route::get('/reports/export/requests', [App\Http\Controllers\Admin\ReportController::class, 'exportRequests'])->name('reports.export.requests');
+Route::get('/reports/export/all', [App\Http\Controllers\Admin\ReportController::class, 'exportAll'])->name('reports.export.all');
+
+// Supplier Account Routes
+Route::get('/supplier-accounts', [App\Http\Controllers\Admin\SupplierAccountController::class, 'index'])->name('supplier-accounts.index');
+Route::get('/supplier-accounts/{id}/edit', [App\Http\Controllers\Admin\SupplierAccountController::class, 'edit'])->name('supplier-accounts.edit');
+Route::put('/supplier-accounts/{id}', [App\Http\Controllers\Admin\SupplierAccountController::class, 'update'])->name('supplier-accounts.update');
+Route::delete('/supplier-accounts/{id}', [App\Http\Controllers\Admin\SupplierAccountController::class, 'destroy'])->name('supplier-accounts.destroy');
+Route::put('/supplier-accounts/{id}/status', [App\Http\Controllers\Admin\SupplierAccountController::class, 'updateStatus'])->name('supplier-accounts.update-status');
+
+// Dashboard Routes
+Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+Route::get('/api/dashboard/stats', [App\Http\Controllers\Admin\DashboardController::class, 'getStats'])->name('dashboard.stats');
+Route::get('/api/dashboard/activities', [App\Http\Controllers\Admin\DashboardController::class, 'getRecentActivities'])->name('dashboard.activities');
+Route::get('/api/dashboard/charts', [App\Http\Controllers\Admin\DashboardController::class, 'getChartsData'])->name('dashboard.charts');
 
 Route::get('/documents/requirements', [App\Http\Controllers\Admin\RequirementController::class, 'index'])->name('documents.requirements');
 Route::post('/requirements/update-status/{id}', [App\Http\Controllers\Admin\RequirementController::class, 'updateStatus'])->name('requirements.update.status');
