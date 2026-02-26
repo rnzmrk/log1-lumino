@@ -23,7 +23,7 @@ Route::middleware(['web'])->group(function () {
 });
 
 // Admin Dashboard Route (requires authentication)
-Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 
 // Test route to debug controller
 Route::get('/test-dashboard', function() {
