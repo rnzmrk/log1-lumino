@@ -1,16 +1,17 @@
 <?php
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes with web middleware
 Route::middleware(['web'])->group(function () {
-    Route::get('/register', [App\Http\Controllers\auth\AuthController::class, 'showRegister'])->name('auth.register');
-    Route::post('/register', [App\Http\Controllers\auth\AuthController::class, 'register'])->name('auth.register');
-    Route::get('/login', [App\Http\Controllers\auth\AuthController::class, 'showLogin'])->name('auth.login');
-    Route::post('/login', [App\Http\Controllers\auth\AuthController::class, 'login'])->name('auth.login');
-    Route::post('/verify-otp', [App\Http\Controllers\auth\AuthController::class, 'verifyOtp'])->name('auth.verify-otp');
-    Route::post('/resend-otp', [App\Http\Controllers\auth\AuthController::class, 'resendOtp'])->name('auth.resend-otp');
-    Route::post('/logout', [App\Http\Controllers\auth\AuthController::class, 'logout'])->name('auth.logout');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('auth.register');
+    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
+    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+    Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('auth.verify-otp');
+    Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('auth.resend-otp');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     // CSRF token refresh endpoint
     Route::get('/csrf-token', function() {
@@ -18,12 +19,21 @@ Route::middleware(['web'])->group(function () {
     });
 
     // Legacy route aliases (for backward compatibility)
-    Route::get('/register', [App\Http\Controllers\auth\AuthController::class, 'showRegister'])->name('register');
-    Route::get('/', [App\Http\Controllers\auth\AuthController::class, 'showLogin'])->name('login');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 });
 
 // Admin Dashboard Route (requires authentication)
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+Route::get('/dashboard', function() {
+    try {
+        // Try to instantiate the controller directly
+        $controller = new \App\Http\Controllers\Admin\DashboardController();
+        return $controller->index();
+    } catch (\Exception $e) {
+        // Fallback: return a simple dashboard view
+        return view('admin.dashboard');
+    }
+})->name('dashboard')->middleware('auth');
 
 // Test route to debug controller
 Route::get('/test-dashboard', function() {
