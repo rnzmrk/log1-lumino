@@ -39,45 +39,66 @@ class SupplierBiddingController extends Controller
      */
     public function submitBid(Request $request)
     {
-        $validated = $request->validate([
-            'request_id' => 'required|exists:requests,id',
-            'bid_amount' => 'required|numeric|min:0',
-            'currency' => 'required|string|max:10',
-            'proposal' => 'nullable|string|max:1000',
-        ]);
+        try {
+            $validated = $request->validate([
+                'request_id' => 'required|exists:requests,id',
+                'bid_amount' => 'required|numeric|min:0',
+                'currency' => 'required|string|max:10',
+                'proposal' => 'nullable|string|max:1000',
+            ]);
 
-        $supplier = auth()->guard('supplier')->user();
-        $requestModel = RequestModel::findOrFail($validated['request_id']);
+            $supplier = auth()->guard('supplier')->user();
+            if (!$supplier) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Supplier not authenticated.'
+                ], 401);
+            }
 
-        // Check if supplier already bid on this request
-        $existingBid = Bid::where('request_id', $validated['request_id'])
-            ->where('supplier_id', $supplier->id)
-            ->first();
+            $requestModel = RequestModel::findOrFail($validated['request_id']);
 
-        if ($existingBid) {
+            // Check if supplier already bid on this request
+            $existingBid = Bid::where('request_id', $validated['request_id'])
+                ->where('supplier_id', $supplier->id)
+                ->first();
+
+            if ($existingBid) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have already submitted a bid for this request.'
+                ], 400);
+            }
+
+            // Create new bid
+            $bid = Bid::create([
+                'request_id' => $validated['request_id'],
+                'supplier_id' => $supplier->id,
+                'supplier_name' => $supplier->company_name ?? $supplier->name,
+                'bid_amount' => $validated['bid_amount'],
+                'currency' => $validated['currency'],
+                'proposal' => $validated['proposal'],
+                'bid_date' => now()->format('Y-m-d'),
+                'status' => 'submitted'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bid submitted successfully!',
+                'bid' => $bid
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'You have already submitted a bid for this request.'
-            ], 400);
+                'message' => 'Validation failed.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Create new bid
-        $bid = Bid::create([
-            'request_id' => $validated['request_id'],
-            'supplier_id' => $supplier->id,
-            'supplier_name' => $supplier->company_name,
-            'bid_amount' => $validated['bid_amount'],
-            'currency' => $validated['currency'],
-            'proposal' => $validated['proposal'],
-            'bid_date' => now()->format('Y-m-d'),
-            'status' => 'submitted'
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Bid submitted successfully!',
-            'bid' => $bid
-        ]);
     }
 
     /**
