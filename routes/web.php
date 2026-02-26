@@ -1,5 +1,5 @@
 <?php
-use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,7 +27,7 @@ Route::middleware(['web'])->group(function () {
 Route::get('/dashboard', function() {
     try {
         // Try to instantiate the controller directly
-        $controller = new \App\Http\Controllers\admin\DashboardController();
+        $controller = new \App\Http\Controllers\Admin\DashboardController();
         return $controller->index();
     } catch (\Exception $e) {
         // Fallback: return a simple dashboard view
@@ -38,7 +38,7 @@ Route::get('/dashboard', function() {
 // Test route to debug controller
 Route::get('/test-dashboard', function() {
     try {
-        $controller = new \App\Http\Controllers\admin\DashboardController();
+        $controller = new \App\Http\Controllers\Admin\DashboardController();
         return 'Controller loaded successfully';
     } catch (\Exception $e) {
         return 'Error: ' . $e->getMessage();
