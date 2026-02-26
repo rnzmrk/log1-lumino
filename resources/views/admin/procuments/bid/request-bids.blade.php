@@ -1,5 +1,10 @@
 @extends('components.app')
 
+@push('meta')
+<meta name="reload" content="disabled">
+<meta name="websocket" content="disabled">
+@endpush
+
 @section('content')
 <div class="w-full">
     {{-- Header --}}
@@ -178,4 +183,27 @@
         }, 3000);
     }
 </script>
+
+@push('scripts')
+<script>
+// Block WebSocket connections to prevent errors
+(function() {
+    const originalWebSocket = window.WebSocket;
+    window.WebSocket = function(url, protocols) {
+        if (url.includes('ws://') || url.includes('wss://')) {
+            console.log('WebSocket connection blocked:', url);
+            // Return a dummy WebSocket that doesn't actually connect
+            return {
+                readyState: 3, // CLOSED
+                close: function() {},
+                send: function() {},
+                addEventListener: function() {},
+                removeEventListener: function() {}
+            };
+        }
+        return new originalWebSocket(url, protocols);
+    };
+})();
+</script>
+@endpush
 @endsection
