@@ -27,7 +27,7 @@ Route::middleware(['web'])->group(function () {
 Route::get('/dashboard', function() {
     try {
         // Try to instantiate the controller directly
-        $controller = new \App\Http\Controllers\Admin\DashboardController();
+        $controller = new \App\Http\Controllers\admin\DashboardController();
         return $controller->index();
     } catch (\Exception $e) {
         // Fallback: return a simple dashboard view
@@ -38,7 +38,7 @@ Route::get('/dashboard', function() {
 // Test route to debug controller
 Route::get('/test-dashboard', function() {
     try {
-        $controller = new \App\Http\Controllers\Admin\DashboardController();
+        $controller = new \App\Http\Controllers\admin\DashboardController();
         return 'Controller loaded successfully';
     } catch (\Exception $e) {
         return 'Error: ' . $e->getMessage();
