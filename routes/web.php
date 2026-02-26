@@ -3,14 +3,17 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\auth\SupplierAuthController;
 use App\Http\Controllers\supplier\SupplierRequirementController;
+use App\Http\Controllers\supplier\SupplierOrderController;
+use App\Http\Controllers\supplier\SupplierInboundController;
+use App\Http\Controllers\supplier\SupplierReturnController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes with web middleware
 Route::middleware(['web'])->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('auth.register');
-    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+    Route::post('/register', [AuthController::class, 'register'])->name('auth.register.submit');
     Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
-    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+    Route::post('/login', [AuthController::class, 'login'])->name('auth.login.submit');
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('auth.verify-otp');
     Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('auth.resend-otp');
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
@@ -21,7 +24,6 @@ Route::middleware(['web'])->group(function () {
     });
 
     // Legacy route aliases (for backward compatibility)
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 });
 
@@ -36,16 +38,6 @@ Route::get('/dashboard', function() {
         return view('admin.dashboard');
     }
 })->name('dashboard')->middleware('auth');
-
-// Test route to debug controller
-Route::get('/test-dashboard', function() {
-    try {
-        $controller = new \App\Http\Controllers\Admin\DashboardController();
-        return 'Controller loaded successfully';
-    } catch (\Exception $e) {
-        return 'Error: ' . $e->getMessage();
-    }
-});
 
 // Supplier Website Route
 Route::get('/supplier', function () {
@@ -69,17 +61,18 @@ Route::get('/supplier/biddings', function () {
     return view('supplier.biddings');
 })->name('supplier.biddings')->middleware('auth:supplier');
 
-Route::get('/supplier/orders', [App\Http\Controllers\Supplier\SupplierOrderController::class, 'index'])->name('supplier.orders')->middleware('auth:supplier');
-Route::put('/supplier/orders/{id}', [App\Http\Controllers\Supplier\SupplierOrderController::class, 'update'])->name('supplier.orders.update')->middleware('auth:supplier');
+Route::get('/supplier/orders', [SupplierOrderController::class, 'index'])->name('supplier.orders')->middleware('auth:supplier');
+Route::put('/supplier/orders/{id}', [SupplierOrderController::class, 'update'])->name('supplier.orders.update')->middleware('auth:supplier');
 
-Route::get('/supplier/inbound', [App\Http\Controllers\Supplier\SupplierInboundController::class, 'index'])->name('supplier.inbound')->middleware('auth:supplier');
-Route::get('/supplier/inbound/{id}', [App\Http\Controllers\Supplier\SupplierInboundController::class, 'show'])->name('supplier.inbound.show')->middleware('auth:supplier');
-Route::post('/supplier/inbound/{id}/update-status', [App\Http\Controllers\Supplier\SupplierInboundController::class, 'updateStatus'])->name('supplier.inbound.update-status')->middleware('auth:supplier');
+Route::get('/supplier/inbound', [SupplierInboundController::class, 'index'])->name('supplier.inbound')->middleware('auth:supplier');
+Route::get('/supplier/inbound/{id}', [SupplierInboundController::class, 'show'])->name('supplier.inbound.show')->middleware('auth:supplier');
+Route::post('/supplier/inbound/{id}/update-status', [SupplierInboundController::class, 'updateStatus'])->name('supplier.inbound.update-status')->middleware('auth:supplier');
 
-Route::get('/supplier/returns', [App\Http\Controllers\supplier\SupplierReturnController::class, 'index'])->name('supplier.returns')->middleware('auth:supplier');
-Route::get('/supplier/returns/{id}', [App\Http\Controllers\supplier\SupplierReturnController::class, 'show'])->name('supplier.return.show')->middleware('auth:supplier');
+Route::get('/supplier/returns', [SupplierReturnController::class, 'index'])->name('supplier.returns')->middleware('auth:supplier');
+Route::get('/supplier/returns/{id}', [SupplierReturnController::class, 'show'])->name('supplier.return.show')->middleware('auth:supplier');
 
 Route::get('/supplier/requirements', [SupplierRequirementController::class, 'index'])->name('supplier.requirements')->middleware('auth:supplier');
+Route::post('/supplier/requirements', [SupplierRequirementController::class, 'store'])->name('supplier.requirements.store')->middleware('auth:supplier');
 
 Route::get('/warehouse/inventory', [App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('warehouse.inventory');
 Route::get('/admin/inventory/asset-items', [App\Http\Controllers\Admin\AssetController::class, 'getAssetItems'])->name('admin.inventory.asset-items');
