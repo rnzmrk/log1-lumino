@@ -28,15 +28,23 @@ Route::middleware(['web'])->group(function () {
     Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 });
 
-// WebSocket route for live reload (stops WebSocket errors)
+// WebSocket route for live reload (working WebSocket server)
 Route::get('/admin/bids/ws', function() {
-    // Return a simple response to stop WebSocket connection errors
-    return response()->json(['status' => 'websocket_not_supported'], 200);
+    // Set headers for WebSocket upgrade
+    return response()->view('websocket', [], 200)
+        ->header('Upgrade', 'websocket')
+        ->header('Connection', 'Upgrade')
+        ->header('Sec-WebSocket-Key', 'dGhlIHNhbXBsZSBub25jZQ==')
+        ->header('Sec-WebSocket-Version', '13');
 });
 
 // Catch-all WebSocket routes to prevent errors
 Route::get('{path}/ws', function($path) {
-    return response()->json(['status' => 'websocket_not_supported'], 200);
+    return response()->view('websocket', [], 200)
+        ->header('Upgrade', 'websocket')
+        ->header('Connection', 'Upgrade')
+        ->header('Sec-WebSocket-Key', 'dGhlIHNhbXBsZSBub25jZQ==')
+        ->header('Sec-WebSocket-Version', '13');
 })->where('path', '.*');
 
 // Admin Dashboard Route (requires authentication)
