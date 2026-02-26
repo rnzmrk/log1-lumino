@@ -75,6 +75,7 @@ class SupplierBiddingController extends Controller
                 'supplier_id' => $supplier->id,
                 'supplier_name' => $supplier->company_name ?? $supplier->name,
                 'bid_amount' => $validated['bid_amount'],
+                'price' => $validated['bid_amount'], // price should be bid_amount
                 'currency' => $validated['currency'],
                 'proposal' => $validated['proposal'],
                 'bid_date' => now()->format('Y-m-d'),
