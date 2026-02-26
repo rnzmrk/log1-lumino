@@ -22,6 +22,9 @@ Route::middleware(['web'])->group(function () {
     Route::get('/', [App\Http\Controllers\auth\AuthController::class, 'showLogin'])->name('login');
 });
 
+// Admin Dashboard Route (requires authentication)
+Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+
 // Supplier Website Route
 Route::get('/supplier', function () {
     return view('supplier-website');
@@ -150,10 +153,9 @@ Route::delete('/supplier-accounts/{id}', [App\Http\Controllers\Admin\SupplierAcc
 Route::put('/supplier-accounts/{id}/status', [App\Http\Controllers\Admin\SupplierAccountController::class, 'updateStatus'])->name('supplier-accounts.update-status');
 
 // Dashboard Routes
-Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-Route::get('/api/dashboard/stats', [App\Http\Controllers\Admin\DashboardController::class, 'getStats'])->name('dashboard.stats');
-Route::get('/api/dashboard/activities', [App\Http\Controllers\Admin\DashboardController::class, 'getRecentActivities'])->name('dashboard.activities');
-Route::get('/api/dashboard/charts', [App\Http\Controllers\Admin\DashboardController::class, 'getChartsData'])->name('dashboard.charts');
+Route::get('/api/dashboard/stats', [App\Http\Controllers\Admin\DashboardController::class, 'getStats'])->name('dashboard.stats')->middleware('auth');
+Route::get('/api/dashboard/activities', [App\Http\Controllers\Admin\DashboardController::class, 'getRecentActivities'])->name('dashboard.activities')->middleware('auth');
+Route::get('/api/dashboard/charts', [App\Http\Controllers\Admin\DashboardController::class, 'getChartsData'])->name('dashboard.charts')->middleware('auth');
 
 Route::get('/documents/requirements', [App\Http\Controllers\Admin\RequirementController::class, 'index'])->name('documents.requirements');
 Route::post('/requirements/update-status/{id}', [App\Http\Controllers\Admin\RequirementController::class, 'updateStatus'])->name('requirements.update.status');
