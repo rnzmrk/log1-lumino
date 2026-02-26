@@ -8,6 +8,7 @@
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <meta name="websocket" content="disabled">
 </head>
 <body class="bg-gray-50">
     <div class="flex h-screen">
