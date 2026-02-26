@@ -175,7 +175,7 @@
         };
 
         try {
-            const response = await fetch('/supplier/bids', {
+            const response = await fetch('/supplier/bids/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

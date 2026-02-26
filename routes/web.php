@@ -98,6 +98,10 @@ Route::get('/supplier/biddings', [SupplierBiddingController::class, 'index'])->n
 Route::post('/supplier/bids/submit', [SupplierBiddingController::class, 'submitBid'])->name('supplier.bids.submit')->middleware('auth:supplier');
 Route::get('/supplier/bids/{requestId}', [SupplierBiddingController::class, 'getBidDetails'])->name('supplier.bids.details')->middleware('auth:supplier');
 
+// Catch-all bids route for JavaScript compatibility
+Route::post('/bids', [SupplierBiddingController::class, 'submitBid'])->name('bids.submit')->middleware('auth:supplier');
+Route::get('/bids/{requestId}', [SupplierBiddingController::class, 'getBidDetails'])->name('bids.details')->middleware('auth:supplier');
+
 Route::get('/supplier/orders', [SupplierOrderController::class, 'index'])->name('supplier.orders')->middleware('auth:supplier');
 Route::put('/supplier/orders/{id}', [SupplierOrderController::class, 'update'])->name('supplier.orders.update')->middleware('auth:supplier');
 
