@@ -2,6 +2,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\auth\SupplierAuthController;
+use App\Http\Controllers\supplier\SupplierRequirementController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes with web middleware
@@ -77,6 +78,8 @@ Route::post('/supplier/inbound/{id}/update-status', [App\Http\Controllers\Suppli
 
 Route::get('/supplier/returns', [App\Http\Controllers\supplier\SupplierReturnController::class, 'index'])->name('supplier.returns')->middleware('auth:supplier');
 Route::get('/supplier/returns/{id}', [App\Http\Controllers\supplier\SupplierReturnController::class, 'show'])->name('supplier.return.show')->middleware('auth:supplier');
+
+Route::get('/supplier/requirements', [SupplierRequirementController::class, 'index'])->name('supplier.requirements')->middleware('auth:supplier');
 
 Route::get('/warehouse/inventory', [App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('warehouse.inventory');
 Route::get('/admin/inventory/asset-items', [App\Http\Controllers\Admin\AssetController::class, 'getAssetItems'])->name('admin.inventory.asset-items');
