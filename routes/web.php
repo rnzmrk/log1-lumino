@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\BidController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\auth\SupplierAuthController;
 use App\Http\Controllers\supplier\SupplierRequirementController;
@@ -114,8 +115,8 @@ Route::get('/procurement/request', function () {
 Route::get('/procurement/po', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'index'])->name('procurement.po');
 
 // Admin Bid Management Routes
-Route::get('/admin/bids', [App\Http\Controllers\Admin\BidController::class, 'index'])->name('admin.bids.index');
-Route::post('/admin/bids/{id}/status', [App\Http\Controllers\Admin\BidController::class, 'updateBidStatus'])->name('admin.bids.updateStatus');
+Route::get('/admin/bids', [BidController::class, 'index'])->name('admin.bids.index');
+Route::post('/admin/bids/{id}/status', [BidController::class, 'updateBidStatus'])->name('admin.bids.updateStatus');
 
 // Admin Purchase Order Routes
 Route::get('/admin/purchase-orders', [App\Http\Controllers\Admin\PurchaseOrderController::class, 'index'])->name('admin.purchase-orders.index');
