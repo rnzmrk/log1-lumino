@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Supplier;
+namespace App\Http\Controllers\supplier;
 
 use App\Http\Controllers\Controller;
 use App\Models\PurchaseOrder;
