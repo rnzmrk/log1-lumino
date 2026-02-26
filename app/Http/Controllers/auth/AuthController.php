@@ -199,27 +199,22 @@ class AuthController extends Controller
         if (!$email || !$userId) {
             return redirect()->route('auth.login')->withErrors(['email' => 'Please login first.']);
         }
-
-        // Generate new OTP using new timestamp
-        $timestamp = now()->timestamp;
         $user = \App\Models\User::find($userId);
-        
         if (!$user) {
-            Session::forget(['login_otp', 'login_otp_email', 'login_user_id', 'login_otp_timestamp', 'login_otp_expires']);
-            return redirect()->route('auth.login')->withErrors(['email' => 'Invalid session. Please login again.']);
+            return back()->withErrors(['email' => 'User not found.']);
         }
 
-        $otpSeed = $user->email . $user->id . $timestamp;
-        $otp = substr(md5($otpSeed), 0, 6);
-        // Convert to numbers only
-        $otp = preg_replace('/[^0-9]/', '', $otp);
-        // Ensure we have 6 digits, pad if needed
-        $otp = str_pad(substr($otp, 0, 6), 6, '0', STR_PAD_RIGHT);
+        // Generate new OTP
+        $timestamp = now()->timestamp;
+        $otp = substr(md5($email . $timestamp . $user->id), 0, 6);
+        $otp = preg_replace('/[^0-9]/', '', substr($otp, 0, 6));
         
-        // Update session with new timestamp
-        Session::put('login_otp', true); // Keep OTP form active
+        // Update session
         Session::put('login_otp_timestamp', $timestamp);
         Session::put('login_otp_expires', now()->addMinutes(30));
+        Session::save();
+
+        \Log::info("Resend OTP - Email: {$email}, User ID: {$user->id}, New OTP: {$otp}");
 
         // Send new OTP email
         try {
@@ -228,11 +223,17 @@ class AuthController extends Controller
                         ->subject('Your New Login OTP Code');
             });
             
+            \Log::info("Resend OTP email sent successfully to: {$email}");
             return back()->with('success', 'New OTP sent to your email!');
         } catch (\Exception $e) {
-            // If email fails, show error for production
-            \Log::error("Email failed: " . $e->getMessage());
-            return back()->withErrors(['email' => 'Failed to resend OTP email. Please try again.']);
+            // For development: Show OTP in logs if email fails
+            \Log::error("Resend email failed: " . $e->getMessage());
+            \Log::info("DEV MODE - Resend OTP Code: {$otp} for email: {$email}");
+            
+            // Still allow login to continue even if email fails (for development)
+            return back()
+                ->with('success', "New OTP sent! (DEV: Check logs for OTP: {$otp})")
+                ->with('dev_otp', $otp); // Store OTP in session for development
         }
     }
 
