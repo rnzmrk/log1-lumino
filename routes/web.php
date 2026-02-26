@@ -27,7 +27,7 @@ Route::middleware(['web'])->group(function () {
 Route::get('/dashboard', function() {
     try {
         // Try to instantiate the controller directly
-        $controller = new \App\Http\Controllers\Admin\DashboardController();
+        $controller = new DashboardController();
         return $controller->index();
     } catch (\Exception $e) {
         // Fallback: return a simple dashboard view
