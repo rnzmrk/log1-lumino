@@ -8,6 +8,7 @@ use App\Http\Controllers\supplier\SupplierRequirementController;
 use App\Http\Controllers\supplier\SupplierOrderController;
 use App\Http\Controllers\supplier\SupplierInboundController;
 use App\Http\Controllers\supplier\SupplierReturnController;
+use App\Http\Controllers\supplier\SupplierBiddingController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes with web middleware
@@ -42,7 +43,12 @@ Route::get('/admin/bids/ws', function() {
     ], 200);
 });
 
-
+Route::get('/supplier/biddings/ws', function() {
+    return response()->json([
+        'status' => 'websocket_connected',
+        'message' => 'WebSocket endpoint is available'
+    ], 200);
+});
 
 Route::get('{path}/ws', function($path) {
     return response()->json([
@@ -88,9 +94,9 @@ Route::get('/supplier/dashboard', function () {
     return view('supplier.dashboard');
 })->name('supplier.dashboard')->middleware('auth:supplier');
 
-Route::get('/supplier/biddings', function () {
-    return view('supplier.biddings');
-})->name('supplier.biddings')->middleware('auth:supplier');
+Route::get('/supplier/biddings', [SupplierBiddingController::class, 'index'])->name('supplier.biddings')->middleware('auth:supplier');
+Route::post('/supplier/bids/submit', [SupplierBiddingController::class, 'submitBid'])->name('supplier.bids.submit')->middleware('auth:supplier');
+Route::get('/supplier/bids/{requestId}', [SupplierBiddingController::class, 'getBidDetails'])->name('supplier.bids.details')->middleware('auth:supplier');
 
 Route::get('/supplier/orders', [SupplierOrderController::class, 'index'])->name('supplier.orders')->middleware('auth:supplier');
 Route::put('/supplier/orders/{id}', [SupplierOrderController::class, 'update'])->name('supplier.orders.update')->middleware('auth:supplier');
