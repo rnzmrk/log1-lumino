@@ -25,7 +25,7 @@
                         Profile
                     </a>
                     <div class="border-t border-slate-100 my-1"></div>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('auth.logout') }}">
                         @csrf
                         <button type="submit" class="flex items-center gap-3 w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-red-600 text-left">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">

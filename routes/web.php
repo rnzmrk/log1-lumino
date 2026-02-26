@@ -2,25 +2,25 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('login');
+// Authentication Routes with web middleware
+Route::middleware(['web'])->group(function () {
+    Route::get('/register', [App\Http\Controllers\auth\AuthController::class, 'showRegister'])->name('auth.register');
+    Route::post('/register', [App\Http\Controllers\auth\AuthController::class, 'register'])->name('auth.register');
+    Route::get('/login', [App\Http\Controllers\auth\AuthController::class, 'showLogin'])->name('auth.login');
+    Route::post('/login', [App\Http\Controllers\auth\AuthController::class, 'login'])->name('auth.login');
+    Route::post('/verify-otp', [App\Http\Controllers\auth\AuthController::class, 'verifyOtp'])->name('auth.verify-otp');
+    Route::post('/resend-otp', [App\Http\Controllers\auth\AuthController::class, 'resendOtp'])->name('auth.resend-otp');
+    Route::post('/logout', [App\Http\Controllers\auth\AuthController::class, 'logout'])->name('auth.logout');
+
+    // CSRF token refresh endpoint
+    Route::get('/csrf-token', function() {
+        return response()->json(['token' => csrf_token()]);
+    });
+
+    // Legacy route aliases (for backward compatibility)
+    Route::get('/register', [App\Http\Controllers\auth\AuthController::class, 'showRegister'])->name('register');
+    Route::get('/', [App\Http\Controllers\auth\AuthController::class, 'showLogin'])->name('login');
 });
-
-// Authentication Routes
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-
-Route::post('/logout', function () {
-    auth()->logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/');
-})->name('logout');
 
 // Supplier Website Route
 Route::get('/supplier', function () {
@@ -53,17 +53,6 @@ Route::post('/supplier/inbound/{id}/update-status', [App\Http\Controllers\Suppli
 
 Route::get('/supplier/returns', [App\Http\Controllers\supplier\SupplierReturnController::class, 'index'])->name('supplier.returns')->middleware('auth:supplier');
 Route::get('/supplier/returns/{id}', [App\Http\Controllers\supplier\SupplierReturnController::class, 'show'])->name('supplier.return.show')->middleware('auth:supplier');
-Route::post('/supplier/returns/{id}/update-status', [App\Http\Controllers\supplier\SupplierReturnController::class, 'updateStatus'])->name('supplier.return.update-status')->middleware('auth:supplier');
-
-Route::get('/supplier/requirements', [App\Http\Controllers\Supplier\SupplierRequirementController::class, 'index'])->name('supplier.requirements')->middleware('auth:supplier');
-Route::post('/supplier/requirements', [App\Http\Controllers\Supplier\SupplierRequirementController::class, 'store'])->name('supplier.requirements.store')->middleware('auth:supplier');
-
-// Supplier Bidding Routes
-Route::post('/supplier/bids', [App\Http\Controllers\Supplier\BidController::class, 'store'])->name('supplier.bids.store')->middleware('auth:supplier');
-
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->name('dashboard');
 
 Route::get('/warehouse/inventory', [App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('warehouse.inventory');
 Route::get('/admin/inventory/asset-items', [App\Http\Controllers\Admin\AssetController::class, 'getAssetItems'])->name('admin.inventory.asset-items');

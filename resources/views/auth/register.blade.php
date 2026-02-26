@@ -95,7 +95,8 @@
 
         <!-- Register Form -->
         <div class="glass-effect rounded-2xl shadow-2xl p-8">
-            <form id="registerForm" class="space-y-6">
+            <form id="registerForm" action="{{ route('auth.register') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                @csrf
                 <!-- Name Field -->
                 <div class="space-y-2">
                     <label for="name" class="block text-sm font-medium text-slate-700">
@@ -196,6 +197,31 @@
                     <p id="emailError" class="text-red-500 text-sm hidden"></p>
                 </div>
 
+                <!-- Profile Picture Field -->
+                <div class="space-y-2">
+                    <label for="profile_picture" class="block text-sm font-medium text-slate-700">
+                        Profile Picture (Optional)
+                    </label>
+                    <div class="relative">
+                        <div class="flex items-center space-x-4">
+                            <div class="shrink-0">
+                                <img id="profilePreview" class="h-16 w-16 object-cover rounded-full border-2 border-slate-200" src="https://via.placeholder.com/64x64/6366f1/ffffff?text=U" alt="Profile preview">
+                            </div>
+                            <label class="block">
+                                <span class="sr-only">Choose profile picture</span>
+                                <input 
+                                    type="file" 
+                                    id="profile_picture" 
+                                    name="profile_picture"
+                                    accept="image/jpeg,image/png,image/jpg,image/gif"
+                                    class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                                >
+                            </label>
+                        </div>
+                    </div>
+                    <p id="profilePictureError" class="text-red-500 text-sm hidden"></p>
+                </div>
+
                 <!-- Password Field -->
                 <div class="space-y-2">
                     <label for="password" class="block text-sm font-medium text-slate-700">
@@ -288,7 +314,7 @@
             <div class="mt-6 text-center">
                 <p class="text-sm text-slate-600">
                     Already have an account? 
-                    <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                    <a href="{{ route('auth.login') }}" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
                         Sign in here
                     </a>
                 </p>
@@ -309,8 +335,22 @@
             const togglePasswordBtn = document.getElementById('togglePassword');
             const eyeIcon = document.getElementById('eyeIcon');
             const eyeOffIcon = document.getElementById('eyeOffIcon');
+            const profilePictureInput = document.getElementById('profile_picture');
+            const profilePreview = document.getElementById('profilePreview');
 
             let showPassword = false;
+
+            // Profile picture preview
+            profilePictureInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profilePreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
             // Toggle password visibility (UI only)
             togglePasswordBtn.addEventListener('click', function() {
