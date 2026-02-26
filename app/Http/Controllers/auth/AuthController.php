@@ -81,11 +81,21 @@ class AuthController extends Controller
         // Generate OTP using time-based approach (numbers only)
         $timestamp = now()->timestamp;
         $otpSeed = $user->email . $user->id . $timestamp;
-        $otp = substr(md5($otpSeed), 0, 6);
-        // Convert to numbers only
-        $otp = preg_replace('/[^0-9]/', '', $otp);
-        // Ensure we have 6 digits, pad if needed
-        $otp = str_pad(substr($otp, 0, 6), 6, '0', STR_PAD_RIGHT);
+        $hash = md5($otpSeed);
+        
+        // Convert hash to numbers and ensure exactly 6 digits
+        $numericPart = '';
+        for ($i = 0; $i < strlen($hash); $i++) {
+            $char = $hash[$i];
+            $numericPart .= ord($char) % 10; // Convert each character to a single digit
+            if (strlen($numericPart) >= 6) break;
+        }
+        
+        // Ensure exactly 6 digits
+        $otp = substr($numericPart, 0, 6);
+        if (strlen($otp) < 6) {
+            $otp = str_pad($otp, 6, '0', STR_PAD_RIGHT);
+        }
         
         // Store user info and timestamp for verification
         Session::put('login_otp', true); // Flag to show OTP form
@@ -206,8 +216,22 @@ class AuthController extends Controller
 
         // Generate new OTP
         $timestamp = now()->timestamp;
-        $otp = substr(md5($email . $timestamp . $user->id), 0, 6);
-        $otp = preg_replace('/[^0-9]/', '', substr($otp, 0, 6));
+        $otpSeed = $email . $user->id . $timestamp;
+        $hash = md5($otpSeed);
+        
+        // Convert hash to numbers and ensure exactly 6 digits
+        $numericPart = '';
+        for ($i = 0; $i < strlen($hash); $i++) {
+            $char = $hash[$i];
+            $numericPart .= ord($char) % 10; // Convert each character to a single digit
+            if (strlen($numericPart) >= 6) break;
+        }
+        
+        // Ensure exactly 6 digits
+        $otp = substr($numericPart, 0, 6);
+        if (strlen($otp) < 6) {
+            $otp = str_pad($otp, 6, '0', STR_PAD_RIGHT);
+        }
         
         // Update session
         Session::put('login_otp_timestamp', $timestamp);
