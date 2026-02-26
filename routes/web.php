@@ -25,6 +25,16 @@ Route::middleware(['web'])->group(function () {
 // Admin Dashboard Route (requires authentication)
 Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 
+// Test route to debug controller
+Route::get('/test-dashboard', function() {
+    try {
+        $controller = new \App\Http\Controllers\Admin\DashboardController();
+        return 'Controller loaded successfully';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
 // Supplier Website Route
 Route::get('/supplier', function () {
     return view('supplier-website');
