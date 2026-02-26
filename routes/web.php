@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes with web middleware
