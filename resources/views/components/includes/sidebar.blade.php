@@ -38,7 +38,7 @@
                             <path d="M9 21h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                         </svg>
                     </span>
-                    <span class="font-medium">Warehouse</span>
+                    <span class="font-medium">Smart Warehouse</span>
                 </span>
                 <span class="text-xs text-slate-400 transition-transform sidebar-chevron">▾</span>
             </button>

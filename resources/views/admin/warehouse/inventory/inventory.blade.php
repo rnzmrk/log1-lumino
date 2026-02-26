@@ -369,5 +369,109 @@
             closeRequestModal();
         }
     });
+    
+    // Auto-update inventory status function
+    async function autoUpdateInventoryStatus(inventoryId) {
+        try {
+            const response = await fetch(`/admin/inventory/${inventoryId}/auto-update-status`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log(`Inventory #${inventoryId} status updated to: ${data.status}`);
+                showNotification(`Status updated to ${data.status}`, 'success');
+                
+                // Update the UI to reflect the new status
+                updateInventoryStatusUI(inventoryId, data.status);
+            } else {
+                console.error('Failed to update status:', data.message);
+                showNotification('Failed to update status', 'error');
+            }
+        } catch (error) {
+            console.error('Error updating inventory status:', error);
+            showNotification('Error updating status', 'error');
+        }
+    }
+    
+    // Update inventory status UI
+    function updateInventoryStatusUI(inventoryId, newStatus) {
+        const row = document.querySelector(`tr[data-inventory-id="${inventoryId}"]`);
+        if (!row) return;
+        
+        const statusCell = row.querySelector('.status-badge');
+        if (!statusCell) return;
+        
+        // Remove all status classes
+        statusCell.classList.remove('bg-green-100', 'text-green-700', 'bg-amber-100', 'text-amber-700', 'bg-red-100', 'text-red-700');
+        
+        // Add new status classes and text
+        switch(newStatus) {
+            case 'in_stock':
+                statusCell.classList.add('bg-green-100', 'text-green-700');
+                statusCell.textContent = 'In Stock';
+                break;
+            case 'low_stock':
+                statusCell.classList.add('bg-amber-100', 'text-amber-700');
+                statusCell.textContent = 'Low Stock';
+                break;
+            case 'out_of_stock':
+                statusCell.classList.add('bg-red-100', 'text-red-700');
+                statusCell.textContent = 'Out of Stock';
+                break;
+        }
+    }
+    
+    // Add data-inventory-id attributes to table rows for easy targeting
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const inventoryIdCell = row.querySelector('td:first-child');
+            if (inventoryIdCell) {
+                const inventoryId = inventoryIdCell.textContent.replace('#INV', '').trim();
+                row.setAttribute('data-inventory-id', inventoryId);
+            }
+        });
+        
+        // Auto-update all inventory statuses on page load
+        setTimeout(() => {
+            batchUpdateInventoryStatuses();
+        }, 1000);
+    });
+    
+    // Batch update all inventory statuses
+    async function batchUpdateInventoryStatuses() {
+        try {
+            const response = await fetch('/admin/inventory/batch-update-statuses', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log(`Batch update completed: ${data.updated_count} items updated`);
+                if (data.updated_count > 0) {
+                    showNotification(`${data.updated_count} inventory statuses updated`, 'success');
+                    // Refresh the page to show updated statuses
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+            } else {
+                console.error('Batch update failed:', data.message);
+            }
+        } catch (error) {
+            console.error('Error during batch update:', error);
+        }
+    }
 </script>
 @endsection

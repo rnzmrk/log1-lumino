@@ -18,8 +18,9 @@ class BidController extends Controller
             return view('admin.procuments.bid.request-bids', compact('request'));
         }
 
-        // Get requests that have bids
-        $requestsWithBids = RequestModel::whereHas('bids')
+        // Get requests that have bids and status 'for_bid'
+        $requestsWithBids = RequestModel::where('status', 'for_bid')
+            ->whereHas('bids')
             ->withCount('bids')
             ->withMin('bids', 'bid_amount')
             ->get()

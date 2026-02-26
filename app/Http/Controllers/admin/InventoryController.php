@@ -158,4 +158,94 @@ class InventoryController extends Controller
             'message' => 'Status updated successfully!'
         ]);
     }
+
+    /**
+     * Automatically update inventory status based on quantity
+     */
+    public function autoUpdateStatus($id)
+    {
+        try {
+            $inventory = Inventory::findOrFail($id);
+            $quantity = $inventory->quantity ?? 0;
+            
+            // Auto-update status based on quantity
+            if ($quantity == 0) {
+                $newStatus = 'out_of_stock';
+            } elseif ($quantity <= 20) {
+                $newStatus = 'low_stock';
+            } else {
+                $newStatus = 'in_stock';
+            }
+            
+            // Only update if status changed
+            if ($inventory->status !== $newStatus) {
+                $inventory->status = $newStatus;
+                $inventory->save();
+                
+                \Log::info("Inventory #{$id} status auto-updated to '{$newStatus}' (quantity: {$quantity})");
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => "Status auto-updated to {$newStatus}",
+                'status' => $newStatus,
+                'quantity' => $quantity
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error("Auto-update status error for inventory #{$id}: " . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Batch update all inventory statuses based on quantity
+     */
+    public function batchUpdateStatuses()
+    {
+        try {
+            $inventories = Inventory::all();
+            $updatedCount = 0;
+            
+            foreach ($inventories as $inventory) {
+                $quantity = $inventory->quantity ?? 0;
+                
+                // Determine new status based on quantity
+                if ($quantity == 0) {
+                    $newStatus = 'out_of_stock';
+                } elseif ($quantity <= 20) {
+                    $newStatus = 'low_stock';
+                } else {
+                    $newStatus = 'in_stock';
+                }
+                
+                // Update if status changed
+                if ($inventory->status !== $newStatus) {
+                    $inventory->status = $newStatus;
+                    $inventory->save();
+                    $updatedCount++;
+                }
+            }
+            
+            \Log::info("Batch update completed: {$updatedCount} inventory statuses updated");
+            
+            return response()->json([
+                'success' => true,
+                'message' => "Batch update completed: {$updatedCount} items updated",
+                'updated_count' => $updatedCount
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error("Batch update error: " . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Batch update failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

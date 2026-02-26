@@ -75,18 +75,21 @@ class AssetController extends Controller
     public function store(HttpRequest $request)
     {
         try {
-            // Step 1: Get request data
-            $data = $request->all();
+            \Log::info('Asset store request received', ['data' => $request->all()]);
             
-            // Step 2: Try basic validation
+            // Step 1: Try basic validation
             $validated = $request->validate([
                 'inventory_id' => 'required|integer|exists:inventories,id',
                 'quantity' => 'required|integer|min:1',
-                'department' => 'nullable|string|max:255'
+                'department' => 'nullable|string|max:255',
+                'duration' => 'nullable|integer|min:1'
             ]);
+
+            \Log::info('Validation passed', ['validated' => $validated]);
 
             // Get inventory item
             $inventory = Inventory::findOrFail($validated['inventory_id']);
+            \Log::info('Inventory found', ['inventory' => $inventory->toArray()]);
             
             // Check if enough quantity is available
             if ($inventory->quantity < $validated['quantity']) {
@@ -96,16 +99,27 @@ class AssetController extends Controller
                 ], 400);
             }
 
-            // Create asset
-            $asset = Asset::create([
+            // Create asset with minimal required fields
+            $assetData = [
                 'inventory_id' => $validated['inventory_id'],
                 'quantity' => $validated['quantity'],
-                'department' => $validated['department'],
-                'status' => 'active'
-            ]);
+                'status' => 'active',
+                'duration' => $validated['duration'] ?? 12 // Default 12 months if not provided
+            ];
+            
+            // Add department only if provided
+            if (!empty($validated['department'])) {
+                $assetData['department'] = $validated['department'];
+            }
 
-            // Step 5: Auto-deduct quantity from inventory
+            \Log::info('Creating asset', ['assetData' => $assetData]);
+            
+            $asset = Asset::create($assetData);
+            \Log::info('Asset created successfully', ['asset' => $asset->toArray()]);
+
+            // Auto-deduct quantity from inventory
             $inventory->decrement('quantity', $validated['quantity']);
+            \Log::info('Inventory quantity updated', ['new_quantity' => $inventory->quantity]);
 
             return response()->json([
                 'success' => true,
@@ -114,13 +128,26 @@ class AssetController extends Controller
                 'inventory_remaining' => $inventory->quantity
             ]);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation error', ['errors' => $e->errors()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
+            \Log::error('Asset store error', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Error: ' . $e->getMessage(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
+                'line' => $e->getLine()
             ], 500);
         }
     }

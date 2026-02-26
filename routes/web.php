@@ -72,6 +72,8 @@ Route::get('/admin/inventory/{id}/edit', [App\Http\Controllers\Admin\InventoryCo
 Route::put('/admin/inventory/{id}', [App\Http\Controllers\Admin\InventoryController::class, 'update'])->name('admin.inventory.update');
 Route::delete('/admin/inventory/{id}', [App\Http\Controllers\Admin\InventoryController::class, 'destroy'])->name('admin.inventory.destroy');
 Route::post('/admin/inventory/{id}/update-status', [App\Http\Controllers\Admin\InventoryController::class, 'updateStatus'])->name('admin.inventory.update-status');
+Route::post('/admin/inventory/{id}/auto-update-status', [App\Http\Controllers\Admin\InventoryController::class, 'autoUpdateStatus'])->name('admin.inventory.auto-update-status');
+Route::post('/admin/inventory/batch-update-statuses', [App\Http\Controllers\Admin\InventoryController::class, 'batchUpdateStatuses'])->name('admin.inventory.batch-update-statuses');
 
 Route::get('/warehouse/inbound', [App\Http\Controllers\Admin\InboundController::class, 'index'])->name('warehouse.inbound');
 Route::get('/admin/inbound/{id}', [App\Http\Controllers\Admin\InboundController::class, 'show'])->name('admin.inbound.show');

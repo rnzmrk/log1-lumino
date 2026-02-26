@@ -71,7 +71,7 @@
                     </div>
                 </div>
                 <div class="text-2xl font-semibold text-slate-900">
-                    0
+                    {{ $stats['inbound_pending'] }}
                 </div>
                 <div class="mt-3 text-xs text-slate-500">
                     Pending arrival
@@ -92,35 +92,34 @@
                     </div>
                 </div>
                 <div class="text-2xl font-semibold text-slate-900">
-                    0
+                    {{ $stats['low_stock_items'] }}
                 </div>
                 <div class="mt-3 text-xs text-slate-500">
-                    Need restocking
+                    From inventory status
                 </div>
             </div>
         </div>
 
         {{-- Second row of cards --}}
         <div class="grid gap-4 md:grid-cols-4 mt-4">
-            {{-- Assets Under Maintenance --}}
+            {{-- Out of Stock Items --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-4">
                     <div class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        Assets Maintenance
+                        Out of Stock Items
                     </div>
-                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-500">
-                        {{-- wrench/asset icon --}}
+                    <div class="h-8 w-8 flex items-center justify-center rounded-xl bg-red-50 text-red-500">
+                        {{-- warning icon --}}
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
-                            <path d="M15.232 5.232a3 3 0 01-3.536 3.536L6.75 13.714V17.25h3.536l4.946-4.946a3 3 0 003.536-3.536L15.75 5.25l-.518-.018z"
-                                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M12 9v4m0 4h.01M3 12a9 9 0 1018 0 9 9 0 00-18 0z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </div>
                 </div>
                 <div class="text-2xl font-semibold text-slate-900">
-                    {{ $stats['maintenance_assets'] }}
+                    {{ $stats['out_of_stock_items'] }}
                 </div>
                 <div class="mt-3 text-xs text-slate-500">
-                    Under maintenance
+                    From inventory status
                 </div>
             </div>
 
@@ -242,15 +241,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Most Out of Stock Items Chart
+            // Most Out of Stock Items Chart - Using real data
             const outOfStockCtx = document.getElementById('outOfStockChart').getContext('2d');
-            new Chart(outOfStockCtx, {
+            const outOfStockData = @json($chartsData['out_of_stock_items'] ?? []);
+            
+            const outOfStockChart = new Chart(outOfStockCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Shipping Labels', 'Plastic Totes', 'Safety Gloves', 'Tape Rolls', 'Box Cutters'],
+                    labels: outOfStockData.map(item => item.name),
                     datasets: [{
                         label: 'Times Out of Stock',
-                        data: [12, 8, 6, 4, 2],
+                        data: outOfStockData.map(item => item.count),
                         backgroundColor: [
                             'rgba(239, 68, 68, 0.8)',
                             'rgba(248, 113, 113, 0.8)',
@@ -311,35 +312,13 @@
                 }
             });
 
-            // 3-Month Supply Forecast Chart
+            // 3-Month Supply Forecast Chart - Using real data
             const forecastCtx = document.getElementById('forecastChart').getContext('2d');
-            new Chart(forecastCtx, {
+            const forecastData = @json($chartsData['supply_forecast'] ?? []);
+            
+            const forecastChart = new Chart(forecastCtx, {
                 type: 'line',
-                data: {
-                    labels: ['Month 1', 'Month 2', 'Month 3'],
-                    datasets: [{
-                        label: 'Shipping Labels',
-                        data: [40, 60, 100],
-                        borderColor: 'rgba(239, 68, 68, 1)',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }, {
-                        label: 'Plastic Totes',
-                        data: [30, 50, 80],
-                        borderColor: 'rgba(245, 158, 11, 1)',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }, {
-                        label: 'Safety Gloves',
-                        data: [25, 35, 60],
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
+                data: forecastData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -356,10 +335,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    const units = ['+250 units', '+180 units', '+120 units'];
-                                    if (context.datasetIndex === 0) return context.dataset.label + ': ' + units[0];
-                                    if (context.datasetIndex === 1) return context.dataset.label + ': ' + units[1];
-                                    if (context.datasetIndex === 2) return context.dataset.label + ': ' + units[2];
+                                    return context.dataset.label + ': ' + context.parsed.y + ' units';
                                 }
                             }
                         }
@@ -391,6 +367,28 @@
                     }
                 }
             });
+
+            // Auto-refresh data every 30 seconds
+            setInterval(function() {
+                fetch('/api/dashboard/charts')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update out of stock chart
+                        if (data.out_of_stock_items) {
+                            const newOutOfStockData = data.out_of_stock_items;
+                            outOfStockChart.data.labels = newOutOfStockData.map(item => item.name);
+                            outOfStockChart.data.datasets[0].data = newOutOfStockData.map(item => item.count);
+                            outOfStockChart.update();
+                        }
+                        
+                        // Update forecast chart
+                        if (data.supply_forecast) {
+                            forecastChart.data = data.supply_forecast;
+                            forecastChart.update();
+                        }
+                    })
+                    .catch(error => console.error('Error updating charts:', error));
+            }, 30000);
         });
     </script>
 @endsection
