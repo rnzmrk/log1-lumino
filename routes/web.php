@@ -26,25 +26,28 @@ Route::middleware(['web'])->group(function () {
 
     // Legacy route aliases (for backward compatibility)
     Route::get('/', [AuthController::class, 'showLogin'])->name('login');
+    
+    // Test route to verify middleware group works
+    Route::get('/test-route', function() {
+        return 'Test route works!';
+    });
 });
 
-// WebSocket route for live reload (working WebSocket server)
+// WebSocket routes (outside middleware groups for proper access)
 Route::get('/admin/bids/ws', function() {
-    // Set headers for WebSocket upgrade
-    return response()->view('websocket', [], 200)
-        ->header('Upgrade', 'websocket')
-        ->header('Connection', 'Upgrade')
-        ->header('Sec-WebSocket-Key', 'dGhlIHNhbXBsZSBub25jZQ==')
-        ->header('Sec-WebSocket-Version', '13');
+    return response()->json([
+        'status' => 'websocket_connected',
+        'message' => 'WebSocket endpoint is available'
+    ], 200);
 });
 
-// Catch-all WebSocket routes to prevent errors
+
+
 Route::get('{path}/ws', function($path) {
-    return response()->view('websocket', [], 200)
-        ->header('Upgrade', 'websocket')
-        ->header('Connection', 'Upgrade')
-        ->header('Sec-WebSocket-Key', 'dGhlIHNhbXBsZSBub25jZQ==')
-        ->header('Sec-WebSocket-Version', '13');
+    return response()->json([
+        'status' => 'websocket_connected', 
+        'message' => 'WebSocket endpoint is available'
+    ], 200);
 })->where('path', '.*');
 
 // Admin Dashboard Route (requires authentication)
