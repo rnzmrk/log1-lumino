@@ -42,6 +42,7 @@ class SupplierBiddingController extends Controller
         $validated = $request->validate([
             'request_id' => 'required|exists:requests,id',
             'bid_amount' => 'required|numeric|min:0',
+            'currency' => 'required|string|max:10',
             'proposal' => 'nullable|string|max:1000',
         ]);
 
@@ -66,6 +67,7 @@ class SupplierBiddingController extends Controller
             'supplier_id' => $supplier->id,
             'supplier_name' => $supplier->company_name,
             'bid_amount' => $validated['bid_amount'],
+            'currency' => $validated['currency'],
             'proposal' => $validated['proposal'],
             'bid_date' => now()->format('Y-m-d'),
             'status' => 'submitted'

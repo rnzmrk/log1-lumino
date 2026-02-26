@@ -8,6 +8,7 @@ class Bid extends Model
 {
     protected $fillable = [
         'request_id',
+        'supplier_id',
         'supplier_name',
         'bid_amount',
         'price', // Add price for compatibility
