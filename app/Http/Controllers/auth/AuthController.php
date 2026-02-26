@@ -174,12 +174,23 @@ class AuthController extends Controller
             return redirect()->route('auth.login')->withErrors(['otp' => 'Invalid session. Please login again.']);
         }
 
+        // Use the same OTP generation logic as login
         $otpSeed = $user->email . $user->id . $timestamp;
-        $expectedOtp = substr(md5($otpSeed), 0, 6);
-        // Convert to numbers only (same as generation)
-        $expectedOtp = preg_replace('/[^0-9]/', '', $expectedOtp);
-        // Ensure we have 6 digits, pad if needed
-        $expectedOtp = str_pad(substr($expectedOtp, 0, 6), 6, '0', STR_PAD_RIGHT);
+        $hash = md5($otpSeed);
+        
+        // Convert hash to numbers and ensure exactly 6 digits (same as generation)
+        $numericPart = '';
+        for ($i = 0; $i < strlen($hash); $i++) {
+            $char = $hash[$i];
+            $numericPart .= ord($char) % 10; // Convert each character to a single digit
+            if (strlen($numericPart) >= 6) break;
+        }
+        
+        // Ensure exactly 6 digits
+        $expectedOtp = substr($numericPart, 0, 6);
+        if (strlen($expectedOtp) < 6) {
+            $expectedOtp = str_pad($expectedOtp, 6, '0', STR_PAD_RIGHT);
+        }
 
         \Log::info("Expected OTP: " . $expectedOtp . ", Input OTP: " . $request->otp);
 
