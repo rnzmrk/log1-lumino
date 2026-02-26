@@ -6,8 +6,16 @@
             <button type="button" 
                     id="user-menu-button"
                     class="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white">S</span>
-                <span class="sr-only">System Admin</span>
+                @if(auth()->user()->profile_picture)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" 
+                         alt="Profile Picture" 
+                         class="inline-flex h-8 w-8 rounded-full object-cover border-2 border-white">
+                @else
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </span>
+                @endif
+                <span class="hidden md:block">{{ auth()->user()->name }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4 text-slate-400">
                     <path d="M19.5 8.25l-7.5 7.5-7.5-7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -16,8 +24,29 @@
             <div id="user-dropdown" 
                  class="absolute right-0 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
                 <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                    <div class="block px-4 py-2 text-xs text-slate-400">Logged in as</div>
+                    <div class="px-4 py-2 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            @if(auth()->user()->profile_picture)
+                                <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" 
+                                     alt="Profile Picture" 
+                                     class="h-8 w-8 rounded-full object-cover">
+                            @else
+                                <div class="h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                </div>
+                            @endif
+                            <div>
+                                <div class="text-sm font-medium text-slate-900">{{ auth()->user()->name }}</div>
+                                <div class="text-xs text-slate-500">{{ auth()->user()->email }}</div>
+                                @if(auth()->user()->position)
+                                    <div class="text-xs text-slate-400">{{ auth()->user()->position }}</div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                     <div class="block px-4 py-2 text-xs text-slate-400">System</div>
-                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-blue-600" role="menuitem" tabindex="-1">
+                    <a href="{{ route('admin.profile.index') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-blue-600" role="menuitem" tabindex="-1">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4">
                             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5" />

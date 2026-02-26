@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\BidController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\auth\SupplierAuthController;
 use App\Http\Controllers\supplier\SupplierRequirementController;
@@ -61,6 +62,13 @@ Route::get('/dashboard', function() {
         return view('admin.dashboard');
     }
 })->name('dashboard')->middleware('auth');
+
+// Admin Profile Routes (requires authentication)
+Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile.index')->middleware('auth');
+Route::get('/admin/profile/edit', [ProfileController::class, 'edit'])->name('admin.profile.edit')->middleware('auth');
+Route::post('/admin/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update')->middleware('auth');
+Route::get('/admin/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.change-password')->middleware('auth');
+Route::post('/admin/profile/update-password', [ProfileController::class, 'updatePassword'])->name('admin.profile.update-password')->middleware('auth');
 
 // Supplier Website Route
 Route::get('/supplier', function () {
